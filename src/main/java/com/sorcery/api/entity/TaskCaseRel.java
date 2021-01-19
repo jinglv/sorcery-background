@@ -1,8 +1,12 @@
 package com.sorcery.api.entity;
 
-import java.util.Date;
 import javax.persistence.*;
+import java.util.Date;
 
+/**
+ * @author jinglv
+ * @date 2020/01/19
+ */
 @Table(name = "test_task_case_rel")
 public class TaskCaseRel extends BaseEntityNew {
     /**

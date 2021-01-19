@@ -1,7 +1,13 @@
 package com.sorcery.api.dao;
 
 import com.sorcery.api.common.MySqlExtensionMapper;
-import com.sorcery.api.entity.Case;
+import com.sorcery.api.entity.Cases;
+import org.springframework.stereotype.Repository;
 
-public interface CaseMapper extends MySqlExtensionMapper<Case> {
+/**
+ * @author jinglv
+ * @date 2021/01/19
+ */
+@Repository
+public interface CaseMapper extends MySqlExtensionMapper<Cases> {
 }

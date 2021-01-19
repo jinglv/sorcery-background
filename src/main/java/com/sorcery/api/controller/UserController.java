@@ -2,20 +2,22 @@ package com.sorcery.api.controller;
 
 import cn.hutool.json.JSONUtil;
 import com.sorcery.api.common.token.Token;
+import com.sorcery.api.common.token.TokenDb;
+import com.sorcery.api.constants.UserConstants;
 import com.sorcery.api.dto.ResultDto;
+import com.sorcery.api.dto.TokenDto;
 import com.sorcery.api.dto.user.LoginUser;
 import com.sorcery.api.dto.user.RegisterUser;
 import com.sorcery.api.entity.User;
 import com.sorcery.api.service.UserService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 /**
@@ -30,8 +32,11 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    private final TokenDb tokenDb;
+
+    public UserController(UserService userService, TokenDb tokenDb) {
         this.userService = userService;
+        this.tokenDb = tokenDb;
     }
 
     @ApiOperation(value = "用户注册", notes = "用户注册接口")
@@ -65,5 +70,35 @@ public class UserController {
             return ResultDto.fail("用户名或密码不能为空");
         }
         return userService.login(username, password);
+    }
+
+    @ApiModelProperty(value = "是否已经登录", notes = "是否已经登录接口")
+    @GetMapping("isLogin")
+    public ResultDto<TokenDto> isLogin(HttpServletRequest request) {
+        String token = request.getHeader(UserConstants.LOGIN_TOKEN);
+        boolean loginFlag = tokenDb.isLogin(token);
+        TokenDto tokenDto = null;
+        if (loginFlag) {
+            log.info("用户已登录");
+            tokenDto = tokenDb.getTokenDto(token);
+        } else {
+            log.info("用户未登录");
+        }
+        return ResultDto.success("成功", tokenDto);
+    }
+
+    @ApiModelProperty(value = "是否已经登录", notes = "是否已经登录接口")
+    @DeleteMapping("logout")
+    public ResultDto<TokenDto> logout(HttpServletRequest request) {
+        String token = request.getHeader(UserConstants.LOGIN_TOKEN);
+        boolean loginFlag = tokenDb.isLogin(token);
+        TokenDto tokenDto = null;
+        if (!loginFlag) {
+            return ResultDto.fail("用户未登录，无需退出");
+        } else {
+            log.info("用户退出登录");
+            tokenDto = tokenDb.removeTokenDto(token);
+        }
+        return ResultDto.success("成功", tokenDto);
     }
 }

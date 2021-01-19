@@ -1,10 +1,16 @@
 package com.sorcery.api.entity;
 
-import java.util.Date;
 import javax.persistence.*;
+import java.util.Date;
 
+/**
+ * 测试用例实体
+ *
+ * @author jinglv
+ * @date 2021/01/19
+ */
 @Table(name = "test_case")
-public class Case extends BaseEntityNew {
+public class Cases extends BaseEntityNew {
     /**
      * 主键
      */

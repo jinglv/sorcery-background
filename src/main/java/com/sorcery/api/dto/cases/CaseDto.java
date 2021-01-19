@@ -1,0 +1,34 @@
+package com.sorcery.api.dto.cases;
+
+import com.sorcery.api.dto.BaseDto;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+/**
+ * @author jingLv
+ * @date 2021/01/19
+ */
+@EqualsAndHashCode(callSuper = true)
+@ApiModel(value = "添加测试用例对象")
+@Data
+public class CaseDto extends BaseDto {
+    /**
+     * 测试用例数据
+     */
+    @ApiModelProperty(value = "测试用例数据", notes = "文件类型case时不传值", required = true)
+    private String caseData;
+
+    /**
+     * 用例名称
+     */
+    @ApiModelProperty(value = "测试用例名称", required = true)
+    private String caseName;
+
+    /**
+     * 备注
+     */
+    @ApiModelProperty(value = "测试用例备注")
+    private String remark;
+}

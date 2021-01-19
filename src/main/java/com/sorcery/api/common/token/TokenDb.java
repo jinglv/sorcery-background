@@ -59,6 +59,12 @@ public class TokenDb {
         return tokenMap.remove(token);
     }
 
+    /**
+     * 验证token是否为null，判断用户是否登录
+     *
+     * @param token
+     * @return
+     */
     public boolean isLogin(String token) {
         return tokenMap.get(token) != null;
     }
