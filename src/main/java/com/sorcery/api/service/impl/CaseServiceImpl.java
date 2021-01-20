@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -45,7 +46,7 @@ public class CaseServiceImpl implements CaseService {
     }
 
     /**
-     * 删除测试用例信息
+     * 删除测试用例信息（逻辑删除，使用的是update）
      *
      * @param caseId       测试用例主键id
      * @param createUserId 创建人用户id
@@ -76,7 +77,20 @@ public class CaseServiceImpl implements CaseService {
      */
     @Override
     public ResultDto<Cases> update(Cases cases) {
-        return null;
+        Cases queryCase = new Cases();
+        queryCase.setId(cases.getId());
+        queryCase.setCreateUserId(cases.getCreateUserId());
+        queryCase.setDelFlag(Constants.DEL_FLAG_ONE);
+        Cases result = caseMapper.selectOne(queryCase);
+        if (Objects.isNull(result)) {
+            return ResultDto.fail("未查到测试用例信息");
+        }
+        cases.setCreateTime(result.getCreateTime());
+        cases.setUpdateTime(new Date());
+        cases.setDelFlag(Constants.DEL_FLAG_ONE);
+        int update = caseMapper.updateByPrimaryKey(cases);
+        Assert.isFalse(update != 1, "修改测试用例失败");
+        return ResultDto.success("成功");
     }
 
     /**
