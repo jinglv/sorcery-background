@@ -1,6 +1,7 @@
 package com.sorcery.api.service.impl;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.json.JSONUtil;
 import com.sorcery.api.constants.Constants;
 import com.sorcery.api.dao.CaseMapper;
 import com.sorcery.api.dto.ResultDto;
@@ -12,8 +13,10 @@ import com.sorcery.api.service.CaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -102,7 +105,16 @@ public class CaseServiceImpl implements CaseService {
      */
     @Override
     public ResultDto<Cases> getById(Integer caseId, Integer createUserId) {
-        return null;
+        Cases queryCase = new Cases();
+        queryCase.setId(caseId);
+        queryCase.setCreateUserId(createUserId);
+        queryCase.setDelFlag(Constants.DEL_FLAG_ONE);
+        Cases result = caseMapper.selectOne(queryCase);
+        //如果为空，则提示，也可以直接返回成功
+        if (Objects.isNull(result)) {
+            return ResultDto.fail("未查到测试用例信息");
+        }
+        return ResultDto.success("成功", result);
     }
 
     /**
@@ -113,7 +125,21 @@ public class CaseServiceImpl implements CaseService {
      */
     @Override
     public ResultDto<PageTableResponse<Cases>> list(PageTableRequest<QueryCaseListDto> pageTableRequest) {
-        return null;
+        QueryCaseListDto params = pageTableRequest.getParams();
+        Integer pageNum = pageTableRequest.getPageNum();
+        Integer pageSize = pageTableRequest.getPageSize();
+
+        //总数
+        Integer recordsTotal = caseMapper.count(params);
+
+        //分页查询数据
+        List<Cases> hogwartsTestJenkinsList = caseMapper.list(params, (pageNum - 1) * pageSize, pageSize);
+
+        PageTableResponse<Cases> casesPageTableResponse = new PageTableResponse<>();
+        casesPageTableResponse.setRecordsTotal(recordsTotal);
+        casesPageTableResponse.setData(hogwartsTestJenkinsList);
+
+        return ResultDto.success("成功", casesPageTableResponse);
     }
 
     /**
@@ -124,7 +150,22 @@ public class CaseServiceImpl implements CaseService {
      * @return 返回接口测试用例分页结果
      */
     @Override
-    public String getCaseDataById(Integer createUserId, Integer caseId) {
-        return null;
+    public ResultDto<String> getCaseDataById(Integer createUserId, Integer caseId) {
+        if (Objects.isNull(caseId)) {
+            return ResultDto.fail("用例id为空");
+        }
+        Cases queryCase = new Cases();
+        queryCase.setCreateUserId(createUserId);
+        queryCase.setId(caseId);
+        log.info("根据测试用例id查询case原始数据-查库入参：{}", JSONUtil.parse(queryCase));
+        Cases resultCase = caseMapper.selectOne(queryCase);
+
+        if (Objects.isNull(resultCase)) {
+            return ResultDto.fail("用例数据未查到");
+        }
+        if (ObjectUtils.isEmpty(resultCase.getCaseData())) {
+            return ResultDto.fail("用例原始数据未查到");
+        }
+        return ResultDto.success(resultCase.getCaseData());
     }
 }

@@ -60,5 +60,5 @@ public interface CaseService {
      * @param caseId       测试用例主键id
      * @return 返回接口测试用例分页结果
      */
-    String getCaseDataById(Integer createUserId, Integer caseId);
+    ResultDto<String> getCaseDataById(Integer createUserId, Integer caseId);
 }
