@@ -24,6 +24,7 @@ public interface JenkinsService {
     /**
      * 删除Jenkins信息
      *
+     * @param tokenDto  token信息
      * @param jenkinsId jenkins主键id
      * @return 返回接口Jenkins删除结果
      */
@@ -32,7 +33,8 @@ public interface JenkinsService {
     /**
      * 修改Jenkins信息
      *
-     * @param jenkins jenkins更新信息
+     * @param tokenDto token信息
+     * @param jenkins  jenkins更新信息
      * @return 返回接口Jenkins更新结果
      */
     ResultDto<Jenkins> update(TokenDto tokenDto, Jenkins jenkins);
@@ -40,7 +42,8 @@ public interface JenkinsService {
     /**
      * 根据id查询Jenkins信息
      *
-     * @param jenkinsId jenkins主键id
+     * @param jenkinsId    jenkins主键id
+     * @param createUserId 创建人用户id
      * @return 返回接口Jenkins查询结果
      */
     ResultDto<Jenkins> getById(Integer jenkinsId, Integer createUserId);
