@@ -94,7 +94,7 @@ public class JenkinsServiceImpl implements JenkinsService {
             //更新token信息中的默认JenkinsId
             tokenDto.setDefaultJenkinsId(null);
             tokenDb.addTokenDto(tokenDto.getToken(), tokenDto);
-            int update = userMapper.updateByPrimaryKeySelective(user);
+            int update = userMapper.updateByPrimaryKey(user);
             Assert.isFalse(update != 1, "更新用户信息失败");
         }
         int delete = jenkinsMapper.deleteByPrimaryKey(jenkinsId);
@@ -113,8 +113,9 @@ public class JenkinsServiceImpl implements JenkinsService {
     @Transactional(rollbackFor = Exception.class)
     public ResultDto<Jenkins> update(TokenDto tokenDto, Jenkins jenkins) {
         Jenkins queryJenkins = new Jenkins();
+        // 根据jenkinsId查询Jenkins信息
         queryJenkins.setId(jenkins.getId());
-        queryJenkins.setCreateUserId(jenkins.getCreateUserId());
+        queryJenkins.setCreateUserId(tokenDto.getUserId());
         Jenkins result = jenkinsMapper.selectOne(queryJenkins);
         // 如果为空，则提示，也可以直接返回成功
         if (Objects.isNull(result)) {
@@ -133,7 +134,7 @@ public class JenkinsServiceImpl implements JenkinsService {
             //更新token信息中的默认JenkinsId
             tokenDto.setDefaultJenkinsId(jenkins.getId());
             tokenDb.addTokenDto(tokenDto.getToken(), tokenDto);
-            int updateUser = userMapper.updateByPrimaryKeySelective(user);
+            int updateUser = userMapper.updateByPrimaryKey(user);
             Assert.isFalse(updateUser != 1, "更新用户信息失败");
         }
         return ResultDto.success("成功");

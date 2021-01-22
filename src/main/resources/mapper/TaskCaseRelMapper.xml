@@ -1,15 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sorcery.api.dao.TaskCaseRelMapper">
-  <resultMap id="BaseResultMap" type="com.sorcery.api.entity.TaskCaseRel">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
-    <result column="task_id" jdbcType="INTEGER" property="taskId" />
-    <result column="case_id" jdbcType="INTEGER" property="caseId" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-  </resultMap>
+    <resultMap id="BaseResultMap" type="com.sorcery.api.entity.TaskCaseRel">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="create_user_id" jdbcType="INTEGER" property="createUserId"/>
+        <result column="task_id" jdbcType="INTEGER" property="taskId"/>
+        <result column="case_id" jdbcType="INTEGER" property="caseId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <select id="listDetail" resultType="com.sorcery.api.dto.cases.TaskCaseRelDetailDto">
+        SELECT tt.`id`,
+        tt.`task_id` AS taskId,
+        tt.`case_id` AS caseId,
+        tc.`package_name` AS packageName,
+        tc.`class_name` AS className,
+        tc.`method_name` AS methodName,
+        tc.`case_sign` AS caseSign,
+        tc.`remark`,
+        tc.`del_flag` AS delFlag,
+        tc.`create_user_id` AS createUserId,
+        tt.`create_time` AS createTime,
+        tt.`update_time` AS updateTime
+        FROM (
+        SELECT *
+        FROM `test_task_case_rel` ttcr
+        WHERE ttcr.`create_user_id` = #{params.createUserId} AND ttcr.`task_id` = #{params.taskId}
+        ) tt
+        LEFT JOIN `test_case tc` ON tt.`case_id` = tc.`id`
+        <if test="params.caseSign != null and params.caseSign != '' ">
+            and tc.`case_sign` LIKE concat('%', #{params.caseSign}, '%')
+        </if>
+        ORDER by tc.`id` DESC
+        <if test="pageNum != null and pageSize != null ">
+            LIMIT #{pageNum}, #{pageSize}
+        </if>
+    </select>
 </mapper>

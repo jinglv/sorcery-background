@@ -102,7 +102,8 @@ public class JenkinsController {
         }
         Jenkins jenkins = new Jenkins();
         // CopyUtil.copyPropertiesCglib(updateHogwartsTestJenkinsDto, hogwartsTestJenkins);
-        jenkins.setName(updateJenkinsDto.getName())
+        jenkins.setId(updateJenkinsDto.getId())
+                .setName(updateJenkinsDto.getName())
                 .setTestCommand(updateJenkinsDto.getTestCommand())
                 .setUrl(updateJenkinsDto.getUrl())
                 .setUserName(updateJenkinsDto.getUserName())
@@ -149,7 +150,7 @@ public class JenkinsController {
     @ApiOperation(value = "根据jenkinsId删除Jenkins信息")
     @DeleteMapping("/{jenkinsId}")
     public ResultDto<Jenkins> delete(HttpServletRequest request, @PathVariable Integer jenkinsId) {
-        log.info("根据jenkinsId删除-入参= " + jenkinsId);
+        log.info("根据jenkinsId删除Jenkins,JenkinsId为:{} ", jenkinsId);
         if (Objects.isNull(jenkinsId)) {
             return ResultDto.fail("JenkinsId不能为空");
         }
