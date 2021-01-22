@@ -61,7 +61,7 @@ public class Jenkins extends BaseEntityNew {
      * 命令运行的测试用例类型  1 文本 2 文件
      */
     @Column(name = "command_run_case_type")
-    private Byte commandRunCaseType;
+    private Integer commandRunCaseType;
 
     /**
      * 备注
