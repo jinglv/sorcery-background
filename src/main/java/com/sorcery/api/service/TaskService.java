@@ -68,7 +68,7 @@ public interface TaskService {
      * @return 返回执行结果
      * @throws IOException io异常
      */
-    ResultDto<Object> startTask(TokenDto tokenDto, RequestInfoDto requestInfoDto, Task task) throws IOException;
+    ResultDto<String> startTask(TokenDto tokenDto, RequestInfoDto requestInfoDto, Task task) throws IOException;
 
     /**
      * 修改测试任务状态信息

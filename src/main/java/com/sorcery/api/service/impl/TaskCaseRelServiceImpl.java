@@ -35,9 +35,9 @@ public class TaskCaseRelServiceImpl implements TaskCaseRelService {
     @Override
     public ResultDto<PageTableResponse<TaskCaseRelDetailDto>> listDetail(PageTableRequest<TaskCaseRelListDto> pageTableRequest) {
         TaskCaseRelListDto params = pageTableRequest.getParams();
-        List<TaskCaseRelDetailDto> taskCaseRelListDtoList = taskCaseRelMapper.listDetail(params, null, null);
-        PageTableResponse<TaskCaseRelDetailDto> hogwartsTestJenkinsPageTableResponse = new PageTableResponse<>();
-        hogwartsTestJenkinsPageTableResponse.setData(taskCaseRelListDtoList);
-        return ResultDto.success("成功", hogwartsTestJenkinsPageTableResponse);
+        List<TaskCaseRelDetailDto> taskCaseRelListDtoList = taskCaseRelMapper.listDetail(params, pageTableRequest.getPageNum(), pageTableRequest.getPageSize());
+        PageTableResponse<TaskCaseRelDetailDto> taskCaseRelDetailDtoPageTableResponse = new PageTableResponse<>();
+        taskCaseRelDetailDtoPageTableResponse.setData(taskCaseRelListDtoList);
+        return ResultDto.success("成功", taskCaseRelDetailDtoPageTableResponse);
     }
 }

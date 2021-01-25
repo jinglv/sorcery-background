@@ -95,11 +95,15 @@ public class UserServiceImpl implements UserService {
         Token token = new Token();
         String tokenStr = DigestUtils.md5DigestAsHex((System.currentTimeMillis() + username + password).getBytes());
         token.setToken(tokenStr);
-
+        // 将登陆信息存入token对象中
         TokenDto tokenDto = new TokenDto();
-        tokenDto.setUserId(queryUser.getId()).setUsername(queryUser.getUsername()).setDefaultJenkinsId(queryUser.getDefaultJenkinsId()).setToken(tokenStr);
+        tokenDto.setUserId(queryUser.getId())
+                .setUsername(queryUser.getUsername())
+                .setDefaultJenkinsId(queryUser.getDefaultJenkinsId())
+                .setToken(tokenStr);
 
-        tokenDb.addTokenDto(tokenStr, tokenDto);
+        TokenDto loginToken = tokenDb.addTokenDto(tokenStr, tokenDto);
+        log.info("登陆完成的信息：{}", loginToken);
         return ResultDto.success("成功", token);
     }
 }

@@ -24,11 +24,9 @@ public class TokenDb {
     }
 
     public TokenDto getTokenDto(String token) {
-
         if (ObjectUtils.isEmpty(token)) {
             return new TokenDto();
         }
-
         return tokenMap.get(token);
     }
 

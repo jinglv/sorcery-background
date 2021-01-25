@@ -25,7 +25,7 @@ import java.util.Objects;
  * @date 2021/01/22
  */
 @Slf4j
-@Api(tags = "霍格沃兹测试学院-任务与用例关联管理")
+@Api(tags = "任务与用例关联管理")
 @RestController
 @RequestMapping("/cases/rel")
 public class TaskCaseRelController {
