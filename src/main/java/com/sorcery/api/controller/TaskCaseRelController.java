@@ -58,7 +58,6 @@ public class TaskCaseRelController {
         }
         params.setCreateUserId(tokenDto.getUserId());
         pageTableRequest.setParams(params);
-
         return taskCaseRelService.listDetail(pageTableRequest);
     }
 }

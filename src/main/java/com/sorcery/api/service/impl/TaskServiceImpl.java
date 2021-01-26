@@ -212,7 +212,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResultDto<String> startTask(TokenDto tokenDto, RequestInfoDto requestInfoDto, Task task) throws IOException {
-        log.info("=====开始测试-Service请求入参====：" + JSONUtil.toJsonStr(requestInfoDto) + "+++++" + JSONUtil.toJsonStr(task));
+        log.info("测试任务执行-Service请求参数：{}, 测试任务请求参数：{}", JSONUtil.toJsonStr(requestInfoDto), JSONUtil.toJsonStr(task));
         if (Objects.isNull(task)) {
             return ResultDto.fail("测试任务参数不能为空");
         }
@@ -389,7 +389,7 @@ public class TaskServiceImpl implements TaskService {
         testCommand.append(caseName)
                 .append(".")
                 .append(commandRunCaseSuffix)
-                .append(" ${aitestBaseUrl}/testCase/data/")
+                .append(" ${baseUrl}/testCase/data/")
                 .append(cases.getId())
                 .append(" -H \"token: ${token}\" ");
         //本行命令执行失败，继续运行下面的命令行

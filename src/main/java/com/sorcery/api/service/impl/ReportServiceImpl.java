@@ -84,7 +84,7 @@ public class ReportServiceImpl implements ReportService {
         int taskSum = 0;
         List<TaskDataDto> taskDataDtoList = taskMapper.getTaskByType(tokenDto.getUserId());
         if (Objects.isNull(taskDataDtoList) || taskDataDtoList.size() == 0) {
-            ResultDto.fail("无数据");
+            ResultDto.fail("无任务数据");
         }
         List<TaskDataDto> newtTaskDataDtoList = new ArrayList<>();
         for (TaskDataDto taskDataDto : taskDataDtoList) {
@@ -122,7 +122,7 @@ public class ReportServiceImpl implements ReportService {
         int taskSum = 0;
         List<TaskDataDto> taskDataDtoList = taskMapper.getTaskByStatus(tokenDto.getUserId());
         if (Objects.isNull(taskDataDtoList) || taskDataDtoList.size() == 0) {
-            ResultDto.fail("无数据");
+            ResultDto.fail("无任务数据");
         }
         List<TaskDataDto> newtTaskDataDtoList = new ArrayList<>();
         for (TaskDataDto taskDataDto : taskDataDtoList) {
@@ -147,7 +147,6 @@ public class ReportServiceImpl implements ReportService {
         }
         taskReportDto.setTaskSum(taskSum);
         taskReportDto.setTaskDataDtoList(newtTaskDataDtoList);
-
         return ResultDto.success("成功", taskReportDto);
     }
 
@@ -161,10 +160,10 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public ResultDto<List<Task>> getTaskByCaseCount(TokenDto tokenDto, Integer start, Integer end) {
-        List<Task> hogwartsTestTaskList = taskMapper.getCaseCountByTask(tokenDto.getUserId(), start, end);
-        if (Objects.isNull(hogwartsTestTaskList) || hogwartsTestTaskList.size() == 0) {
-            return ResultDto.fail("无数据");
+        List<Task> taskList = taskMapper.getCaseCountByTask(tokenDto.getUserId(), start, end);
+        if (Objects.isNull(taskList) || taskList.size() == 0) {
+            return ResultDto.fail("无任务数据");
         }
-        return ResultDto.success("成功", hogwartsTestTaskList);
+        return ResultDto.success("成功", taskList);
     }
 }
