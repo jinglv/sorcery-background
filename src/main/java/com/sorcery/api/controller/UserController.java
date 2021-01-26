@@ -11,7 +11,6 @@ import com.sorcery.api.dto.user.RegisterUser;
 import com.sorcery.api.entity.User;
 import com.sorcery.api.service.UserService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ObjectUtils;
@@ -31,7 +30,6 @@ import java.util.Objects;
 public class UserController {
 
     private final UserService userService;
-
     private final TokenDb tokenDb;
 
     public UserController(UserService userService, TokenDb tokenDb) {
@@ -39,6 +37,12 @@ public class UserController {
         this.tokenDb = tokenDb;
     }
 
+    /**
+     * 用户注册接口
+     *
+     * @param registerUser 用户注册请求信息
+     * @return 返回请求接口结果
+     */
     @ApiOperation(value = "用户注册", notes = "用户注册接口")
     @PostMapping("register")
     public ResultDto<User> save(@RequestBody RegisterUser registerUser) {
@@ -56,10 +60,18 @@ public class UserController {
         }
         User user = new User();
         // CopyUtils.copyPropertiesCglib(registerUser, user);
-        user.setUsername(registerUser.getUsername()).setPassword(registerUser.getPassword()).setEmail(registerUser.getEmail());
+        user.setUsername(registerUser.getUsername())
+                .setPassword(registerUser.getPassword())
+                .setEmail(registerUser.getEmail());
         return userService.save(user);
     }
 
+    /**
+     * 用户登录接口
+     *
+     * @param loginUser 用户登录请求信息
+     * @return 返回请求接口结果
+     */
     @ApiOperation(value = "用户登录", notes = "用户登录接口")
     @PostMapping("login")
     public ResultDto<Token> login(@RequestBody LoginUser loginUser) {
@@ -72,7 +84,13 @@ public class UserController {
         return userService.login(username, password);
     }
 
-    @ApiModelProperty(value = "是否已经登录", notes = "是否已经登录接口")
+    /**
+     * 判断请求是否为登录状态
+     *
+     * @param request 前端请求
+     * @return 返回请求接口结果
+     */
+    @ApiOperation(value = "是否已经登录", notes = "是否已经登录接口")
     @GetMapping("isLogin")
     public ResultDto<TokenDto> isLogin(HttpServletRequest request) {
         String token = request.getHeader(UserConstants.LOGIN_TOKEN);
@@ -87,7 +105,13 @@ public class UserController {
         return ResultDto.success("成功", tokenDto);
     }
 
-    @ApiModelProperty(value = "是否已经登录", notes = "是否已经登录接口")
+    /**
+     * 用户退出登录
+     *
+     * @param request 前端请求
+     * @return 返回请求接口结果
+     */
+    @ApiOperation(value = "用户退出登录", notes = "用户退出登录")
     @DeleteMapping("logout")
     public ResultDto<TokenDto> logout(HttpServletRequest request) {
         String token = request.getHeader(UserConstants.LOGIN_TOKEN);

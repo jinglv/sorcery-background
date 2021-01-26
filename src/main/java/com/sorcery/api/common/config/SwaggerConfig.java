@@ -38,8 +38,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("test-auto系统")
-                .description("test-auto系统接口文档")
+                .title("Sorcery系统")
+                .description("Sorcery系统系统接口文档")
                 .contact(new Contact("", "", ""))
                 .version("1.0")
                 .build();
