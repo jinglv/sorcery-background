@@ -1,28 +1,27 @@
 <project>
-    <actions/>
-    <description/>
+    <description>Java操作Jenkins演示</description>
     <keepDependencies>false</keepDependencies>
     <properties>
         <hudson.model.ParametersDefinitionProperty>
             <parameterDefinitions>
                 <hudson.model.StringParameterDefinition>
-                    <name>baseUrl</name>
-                    <description>测试平台baseUrl</description>
-                    <defaultValue/>
-                    <trim>false</trim>
+                    <name>userId</name>
+                    <description>用户id</description>
+                    <defaultValue>12</defaultValue>
+                    <trim>true</trim>
                 </hudson.model.StringParameterDefinition>
-                <hudson.model.StringParameterDefinition>
-                    <name>token</name>
-                    <description>测试平台token</description>
-                    <defaultValue/>
+                <hudson.model.TextParameterDefinition>
+                    <name>remark</name>
+                    <description>备注信息</description>
+                    <defaultValue>Jenkins调用</defaultValue>
                     <trim>false</trim>
-                </hudson.model.StringParameterDefinition>
-                <hudson.model.StringParameterDefinition>
+                </hudson.model.TextParameterDefinition>
+                <hudson.model.TextParameterDefinition>
                     <name>testCommand</name>
                     <description>测试命令</description>
-                    <defaultValue>mvn</defaultValue>
+                    <defaultValue>测试命令演示</defaultValue>
                     <trim>false</trim>
-                </hudson.model.StringParameterDefinition>
+                </hudson.model.TextParameterDefinition>
             </parameterDefinitions>
         </hudson.model.ParametersDefinitionProperty>
     </properties>
@@ -35,8 +34,9 @@
     <concurrentBuild>false</concurrentBuild>
     <builders>
         <hudson.tasks.Shell>
-            <command>eval ${testCommand}</command>
-            <configuredLocalRules/>
+            <command>
+                eval "${testCommand}"
+            </command>
         </hudson.tasks.Shell>
     </builders>
     <publishers/>

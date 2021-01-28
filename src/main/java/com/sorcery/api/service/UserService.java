@@ -5,6 +5,8 @@ import com.sorcery.api.dto.ResultDto;
 import com.sorcery.api.entity.User;
 
 /**
+ * 用户操作服务层
+ *
  * @author jingLv
  * @date 2021/01/18
  */
@@ -18,7 +20,7 @@ public interface UserService {
     ResultDto<User> getById(Integer id);
 
     /**
-     * 保存用户信息
+     * 保存用户信息（用户注册）
      *
      * @param user 用户信息
      * @return 返回接口用户保存结果

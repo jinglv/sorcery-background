@@ -233,9 +233,10 @@ public class TaskServiceImpl implements TaskService {
         Task resultTask = taskMapper.selectOne(queryTask);
         if (Objects.isNull(resultTask)) {
             String tips = "未查到测试任务";
-            log.error(tips + resultTask.getId());
+            log.error(tips, resultTask.getId());
             return ResultDto.fail(tips);
         }
+        // 获取执行Jenkins执行测试命令
         String testCommandStr = task.getTestCommand();
         if (ObjectUtils.isEmpty(testCommandStr)) {
             testCommandStr = resultTask.getTestCommand();
@@ -247,20 +248,19 @@ public class TaskServiceImpl implements TaskService {
         resultTask.setStatus(Constants.STATUS_TWO);
         taskMapper.updateByPrimaryKeySelective(resultTask);
 
-        StringBuilder testCommand = new StringBuilder();
         //添加保存测试任务接口拼装的mvn test 命令
-        testCommand.append(testCommandStr);
-        testCommand.append(" \n");
+        String testCommand = testCommandStr + " \n";
+        // 更新执行测试任务状态
         StringBuilder updateStatusUrl = JenkinsUtils.getUpdateTaskStatusUrl(requestInfoDto, resultTask);
         //构建参数组装
         Map<String, String> params = new HashMap<>();
         params.put("baseUrl", requestInfoDto.getBaseUrl());
         params.put("token", requestInfoDto.getToken());
-        params.put("testCommand", testCommand.toString());
+        params.put("testCommand", testCommand);
         params.put("updateStatusData", updateStatusUrl.toString());
 
-        log.info("=====执行测试Job的构建参数组装====：" + JSONUtil.toJsonStr(params));
-        log.info("=====执行测试Job的修改任务状态的数据组装====：" + updateStatusUrl);
+        log.info("执行测试Job的构建参数组装：{}", JSONUtil.toJsonStr(params));
+        log.info("执行测试Job的修改任务状态的数据组装：{}", updateStatusUrl);
 
         OperateJenkinsJobDto operateJenkinsJobDto = new OperateJenkinsJobDto();
         operateJenkinsJobDto.setParams(params);
@@ -309,18 +309,18 @@ public class TaskServiceImpl implements TaskService {
     /**
      * 组装测试命令
      *
-     * @param testCommand
-     * @param jenkins
-     * @param testCaseList
+     * @param testCommand Jenkins测试命令
+     * @param jenkins     jenkins测试信息
+     * @param casesList   测试用例列表
      */
-    private void makeTestCommand(StringBuilder testCommand, Jenkins jenkins, List<Cases> testCaseList) {
+    private void makeTestCommand(StringBuilder testCommand, Jenkins jenkins, List<Cases> casesList) {
         //打印测试目录
         testCommand.append("pwd");
         testCommand.append("\n");
         if (Objects.isNull(jenkins)) {
             throw new ServiceException("组装测试命令时，Jenkins信息为空");
         }
-        if (Objects.isNull(testCaseList) || testCaseList.size() == 0) {
+        if (Objects.isNull(casesList) || casesList.size() == 0) {
             throw new ServiceException("组装测试命令时，测试用例列表信息为空");
         }
         String runCommand = jenkins.getTestCommand();
@@ -337,7 +337,7 @@ public class TaskServiceImpl implements TaskService {
         }
         //文本类型
         if (commandRunCaseType == 1) {
-            for (Cases cases : testCaseList) {
+            for (Cases cases : casesList) {
                 //拼装命令前缀
                 testCommand.append(systemTestCommand).append(" ");
                 //拼装测试数据
@@ -351,7 +351,7 @@ public class TaskServiceImpl implements TaskService {
             if (ObjectUtils.isEmpty(commandRunCaseSuffix)) {
                 throw new ServiceException("组装测试命令且case为文件时，测试用例后缀名不能为空");
             }
-            for (Cases cases : testCaseList) {
+            for (Cases cases : casesList) {
                 //拼装下载文件的curl命令
                 makeCurlCommand(testCommand, cases, commandRunCaseSuffix);
                 testCommand.append("\n");
@@ -367,16 +367,16 @@ public class TaskServiceImpl implements TaskService {
                         .append("\n");
             }
         }
-        log.info("testCommand.toString()== " + testCommand.toString() + "  runCommand== " + runCommand);
+        log.info("Jenkins测试命令：{},执行测试命令：{} ", testCommand.toString(), runCommand);
         testCommand.append("\n");
     }
 
     /**
      * 拼装下载文件的curl命令
      *
-     * @param testCommand
-     * @param cases
-     * @param commandRunCaseSuffix
+     * @param testCommand          Jenkins执行命令
+     * @param cases                测试用例
+     * @param commandRunCaseSuffix 执行配置文件后缀
      */
     private void makeCurlCommand(StringBuilder testCommand, Cases cases, String commandRunCaseSuffix) {
         //通过curl命令获取测试数据并保存为文件

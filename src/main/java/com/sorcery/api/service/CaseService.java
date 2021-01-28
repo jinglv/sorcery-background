@@ -7,6 +7,8 @@ import com.sorcery.api.dto.page.PageTableResponse;
 import com.sorcery.api.entity.Cases;
 
 /**
+ * 测试用例服务层
+ *
  * @author jingLv
  * @date 2021/01/19
  */
@@ -46,7 +48,7 @@ public interface CaseService {
     ResultDto<Cases> getById(Integer caseId, Integer createUserId);
 
     /**
-     * 查询Jenkins信息列表
+     * 查询测试用例信息列表
      *
      * @param pageTableRequest 分页查询
      * @return 返回接口测试用例分页查询结果

@@ -60,15 +60,176 @@ Jenkins接口地址：http://ip:port/api/
 
 ## 示例
 
-### 获取JenkinsJob的配置数据
+### 1. 创建一个Jenkins Job
 
-- 创建Job
-- 进入Job
+新建一个自由风格的Jenkins Job，新增一些参数
+
+![image-20210127135250684](https://gitee.com/JeanLv/study_image/raw/master///image-20210127135250684.png)
+
+### 2. 获取Jenkins Job的配置数据
+
 - 到Jenkins服务器上，进入到jobs中查看config.xml
 
-![image-20210125141837226](https://gitee.com/JeanLv/study_image/raw/master///image-20210125141837226.png)
+  ![image-20210127135519329](https://gitee.com/JeanLv/study_image/raw/master///image-20210127135519329.png)
 
-或者请求地址：http://ip:port/job/test/config.xml
+- 或者请求地址：http://ip:port/job/test/config.xml
 
-![image-20210125141749415](https://gitee.com/JeanLv/study_image/raw/master///image-20210125141749415.png)
+  ![image-20210127135212352](https://gitee.com/JeanLv/study_image/raw/master///image-20210127135212352.png)
+
+### 3. 编写代码，操作Jenkins
+
+- 创建新的Job，以上面的获取到的配置文件为基础
+
+  ```java
+      public static void main(String[] args) throws URISyntaxException, IOException {
+          String jenkinsUrl = "http://60.205.228.49:8086/";
+          String username = "admin";
+          String password = "admin";
+          String jobName = "test02";
+          // 创建Jenkins初始化
+          JenkinsHttpClient jenkinsHttpClient = new JenkinsHttpClient(new URI(jenkinsUrl), username, password);
+          // 创建jenkins服务
+          JenkinsServer jenkinsServer = new JenkinsServer(jenkinsHttpClient);
+          // 读取Jenkins配置文件
+          FileReader fileReader = new FileReader(new File("src/main/resources/jenkins/test_01.xml"));
+          String jobXml = fileReader.readString();
+          // 创建Job，参数：job的名称与配置文件，参数3表示是需要登录权限校验，否则会抛出异常：status code: 403, reason phrase: Forbidden
+          jenkinsServer.createJob(jobName, jobXml, true);
+      }
+  ```
+
+  执行结果：
+
+  ![image-20210127173008543](https://gitee.com/JeanLv/study_image/raw/master///image-20210127173008543.png)
+
+  再刷新Jenkins，发现会有一个新的名为test02的Jobs，并查看配置与模板是一样的
+
+- 已创建Job，接下来，我们需要执行Job
+
+  ```java
+      public static void main(String[] args) throws URISyntaxException, IOException {
+          String jenkinsUrl = "http://60.205.228.49:8086/";
+          String username = "admin";
+          String password = "admin";
+          // 创建Jenkins初始化
+          JenkinsHttpClient jenkinsHttpClient = new JenkinsHttpClient(new URI(jenkinsUrl), username, password);
+          // 创建jenkins服务
+          JenkinsServer jenkinsServer = new JenkinsServer(jenkinsHttpClient);
+          // 获取当前所有的Job
+          Map<String, Job> jobMap = jenkinsServer.getJobs();
+          // 获取名为test02的Job
+          Job test02 = jobMap.get("test02");
+          // 执行Job, 异常：status code: 400, reason phrase: Bad Request，这是因为Job在配置了两个参数，但是在构建的时候，并没有传入参数
+          // test02.build(true);
+  
+          // 设置Job的参数
+          Map<String, String> params = new HashMap<>();
+          params.put("userId", "15");
+          params.put("remark", "Jenkins演示调用");
+          // 执行Job
+          test02.build(params, true);
+      }
+  ```
+
+  执行结果：
+
+  ![image-20210127173953206](https://gitee.com/JeanLv/study_image/raw/master///image-20210127173953206.png)
+
+  回到Jenkins进入到test02 Job里：
+
+  ![image-20210127174047950](https://gitee.com/JeanLv/study_image/raw/master///image-20210127174047950.png)
+
+  可进入到#1里面查看构建的参数
+
+  ![image-20210127174151545](https://gitee.com/JeanLv/study_image/raw/master///image-20210127174151545.png)
+
+### 4. 命令执行操作
+
+1. Jenkins配置文件新增参数， 并配置执行命令
+
+   ```xml
+   <project>
+       <description>Java操作Jenkins演示</description>
+       <keepDependencies>false</keepDependencies>
+       <properties>
+           <hudson.model.ParametersDefinitionProperty>
+               <parameterDefinitions>
+                   <hudson.model.StringParameterDefinition>
+                       <name>userId</name>
+                       <description>用户id</description>
+                       <defaultValue>12</defaultValue>
+                       <trim>true</trim>
+                   </hudson.model.StringParameterDefinition>
+                   <hudson.model.TextParameterDefinition>
+                       <name>remark</name>
+                       <description>备注信息</description>
+                       <defaultValue>Jenkins调用</defaultValue>
+                       <trim>false</trim>
+                   </hudson.model.TextParameterDefinition>
+                   <hudson.model.TextParameterDefinition>
+                       <name>testCommand</name>
+                       <description>测试命令</description>
+                       <defaultValue>测试命令演示</defaultValue>
+                       <trim>false</trim>
+                   </hudson.model.TextParameterDefinition>
+               </parameterDefinitions>
+           </hudson.model.ParametersDefinitionProperty>
+       </properties>
+       <scm class="hudson.scm.NullSCM"/>
+       <canRoam>true</canRoam>
+       <disabled>false</disabled>
+       <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+       <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+       <triggers/>
+       <concurrentBuild>false</concurrentBuild>
+       <builders>
+           <hudson.tasks.Shell>
+               <command>
+                   eval "${testCommand}"
+               </command>
+           </hudson.tasks.Shell>
+       </builders>
+       <publishers/>
+       <buildWrappers/>
+   </project>
+   ```
+
+   
+
+2. 编写代码，更新已存在Job，传入命令执行
+
+   ```java
+       public static void main(String[] args) throws URISyntaxException, IOException {
+           String jenkinsUrl = "http://60.205.228.49:8086/";
+           String username = "admin";
+           String password = "admin";
+           String jobName = "test02";
+           // 创建Jenkins初始化
+           JenkinsHttpClient jenkinsHttpClient = new JenkinsHttpClient(new URI(jenkinsUrl), username, password);
+           // 创建jenkins服务
+           JenkinsServer jenkinsServer = new JenkinsServer(jenkinsHttpClient);
+           // 读取Jenkins配置文件
+           FileReader fileReader = new FileReader(new File("src/main/resources/jenkins/test_01.xml"));
+           String jobXml = fileReader.readString();
+           // 更新已存在的Job
+           jenkinsServer.updateJob(jobName, jobXml, true);
+           // 获取当前所有的Job
+           Map<String, Job> jobMap = jenkinsServer.getJobs();
+           // 获取名为test02的Job
+           Job test02 = jobMap.get("test02");
+           // 执行Job, 异常：status code: 400, reason phrase: Bad Request，这是因为Job在配置了两个参数，但是在构建的时候，并没有传入参数
+           // test02.build(true);
+   
+           // 设置Job的参数
+           Map<String, String> params = new HashMap<>();
+           params.put("userId", "15");
+           params.put("remark", "Jenkins演示调用");
+           params.put("testCommand", "pwd");
+           // 执行Job
+           test02.build(params, true);
+   ```
+
+3. 执行成功，回到Jenkins查看构建结果
+
+   ![image-20210127175511772](https://gitee.com/JeanLv/study_image/raw/master///image-20210127175511772.png)
 

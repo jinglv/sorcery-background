@@ -228,6 +228,7 @@ public class TaskController {
         Task task = new Task();
         task.setId(startTestDto.getTaskId());
         task.setTestCommand(startTestDto.getTestCommand());
+        
         TokenDto tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
         task.setCreateUserId(tokenDto.getUserId());
         task.setTestJenkinsId(tokenDto.getDefaultJenkinsId());

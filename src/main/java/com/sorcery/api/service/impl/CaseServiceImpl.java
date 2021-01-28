@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * 测试用例服务层实现
+ *
  * @author jingLv
  * @date 2021/01/19
  */
@@ -42,6 +44,7 @@ public class CaseServiceImpl implements CaseService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResultDto<Cases> save(Cases cases) {
+        // 设置测试用例未逻辑删除的标识
         cases.setDelFlag(Constants.DEL_FLAG_ONE);
         int result = caseMapper.insertUseGeneratedKeys(cases);
         Assert.isFalse(result != 1, "新增测试用例失败");
@@ -57,42 +60,48 @@ public class CaseServiceImpl implements CaseService {
      */
     @Override
     public ResultDto<Cases> delete(Integer caseId, Integer createUserId) {
+        // 根据传入的测试用例id和创建人id，查询测试用例信息，且该用例未被逻辑删除
         Cases queryCase = new Cases();
-        queryCase.setId(caseId);
-        queryCase.setCreateUserId(createUserId);
-        queryCase.setDelFlag(Constants.DEL_FLAG_ONE);
+        queryCase.setId(caseId)
+                .setCreateUserId(createUserId)
+                .setDelFlag(Constants.DEL_FLAG_ONE);
         Cases result = caseMapper.selectOne(queryCase);
         // 如果为空，则提示
         if (Objects.isNull(result)) {
             return ResultDto.fail("未查到测试用例信息");
         }
+        // 设置测试用例逻辑删除（del_flag=0）
         result.setDelFlag(Constants.DEL_FLAG_ZERO);
+        // 数据库更新测试用例
         int update = caseMapper.updateByPrimaryKey(result);
-        Assert.isFalse(update != 1, "修改测试用例失败");
+        Assert.isFalse(update != 1, "逻辑删除（更新）测试用例失败");
         return ResultDto.success("成功");
     }
 
     /**
-     * 修改测试用例信息
+     * 修改测试用例信息（只能修改未被逻辑删除的测试用例）
      *
      * @param cases 测试用例更新信息
      * @return 返回接口测试用例更新结果
      */
     @Override
     public ResultDto<Cases> update(Cases cases) {
+        // 根据传入的测试用例id和创建人id，查询测试用例信息，且该用例未被逻辑删除
         Cases queryCase = new Cases();
-        queryCase.setId(cases.getId());
-        queryCase.setCreateUserId(cases.getCreateUserId());
-        queryCase.setDelFlag(Constants.DEL_FLAG_ONE);
+        queryCase.setId(cases.getId())
+                .setCreateUserId(cases.getCreateUserId())
+                .setDelFlag(Constants.DEL_FLAG_ONE);
         Cases result = caseMapper.selectOne(queryCase);
         if (Objects.isNull(result)) {
             return ResultDto.fail("未查到测试用例信息");
         }
+        // 修改测试用例信息
         cases.setCreateTime(result.getCreateTime());
         cases.setUpdateTime(new Date());
         cases.setDelFlag(Constants.DEL_FLAG_ONE);
+        // 数据库更新测试用例
         int update = caseMapper.updateByPrimaryKey(cases);
-        Assert.isFalse(update != 1, "修改测试用例失败");
+        Assert.isFalse(update != 1, "修改测试用例信息失败");
         return ResultDto.success("成功");
     }
 
@@ -105,10 +114,11 @@ public class CaseServiceImpl implements CaseService {
      */
     @Override
     public ResultDto<Cases> getById(Integer caseId, Integer createUserId) {
+        // 根据传入的测试用例id和创建人id，查询测试用例信息，且该用例未被逻辑删除
         Cases queryCase = new Cases();
-        queryCase.setId(caseId);
-        queryCase.setCreateUserId(createUserId);
-        queryCase.setDelFlag(Constants.DEL_FLAG_ONE);
+        queryCase.setId(caseId)
+                .setCreateUserId(createUserId)
+                .setDelFlag(Constants.DEL_FLAG_ONE);
         Cases result = caseMapper.selectOne(queryCase);
         //如果为空，则提示，也可以直接返回成功
         if (Objects.isNull(result)) {
@@ -118,27 +128,25 @@ public class CaseServiceImpl implements CaseService {
     }
 
     /**
-     * 查询Jenkins信息列表
+     * 查询测试用例信息列表
      *
      * @param pageTableRequest 分页查询
      * @return 返回接口测试用例分页查询结果
      */
     @Override
     public ResultDto<PageTableResponse<Cases>> list(PageTableRequest<QueryCaseListDto> pageTableRequest) {
+        // 测试用例分页列表
         QueryCaseListDto params = pageTableRequest.getParams();
         Integer pageNum = pageTableRequest.getPageNum();
         Integer pageSize = pageTableRequest.getPageSize();
-
         //总数
         Integer recordsTotal = caseMapper.count(params);
-
         //分页查询数据
         List<Cases> hogwartsTestJenkinsList = caseMapper.list(params, (pageNum - 1) * pageSize, pageSize);
 
         PageTableResponse<Cases> casesPageTableResponse = new PageTableResponse<>();
         casesPageTableResponse.setRecordsTotal(recordsTotal);
         casesPageTableResponse.setData(hogwartsTestJenkinsList);
-
         return ResultDto.success("成功", casesPageTableResponse);
     }
 
@@ -155,17 +163,16 @@ public class CaseServiceImpl implements CaseService {
             return ResultDto.fail("用例id为空");
         }
         Cases queryCase = new Cases();
-        queryCase.setCreateUserId(createUserId);
-        queryCase.setId(caseId);
+        queryCase.setCreateUserId(createUserId).setId(caseId);
         log.info("根据测试用例id查询case原始数据-查库入参：{}", JSONUtil.parse(queryCase));
-        Cases resultCase = caseMapper.selectOne(queryCase);
 
-        if (Objects.isNull(resultCase)) {
-            return ResultDto.fail("用例数据未查到");
+        Cases result = caseMapper.selectOne(queryCase);
+        if (Objects.isNull(result)) {
+            return ResultDto.fail("测试用例信息未查到");
         }
-        if (ObjectUtils.isEmpty(resultCase.getCaseData())) {
-            return ResultDto.fail("用例原始数据未查到");
+        if (ObjectUtils.isEmpty(result.getCaseData())) {
+            return ResultDto.fail("测试用例原始数据未查到");
         }
-        return ResultDto.success(resultCase.getCaseData());
+        return ResultDto.success(result.getCaseData());
     }
 }

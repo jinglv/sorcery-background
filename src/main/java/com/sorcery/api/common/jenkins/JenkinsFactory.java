@@ -14,7 +14,7 @@ import java.net.URISyntaxException;
 import java.util.Objects;
 
 /**
- * 获取Jenkins服务
+ * 获取Jenkins服务工厂类
  *
  * @author jingLv
  * @date 2021/01/25
@@ -63,6 +63,7 @@ public class JenkinsFactory {
     public JenkinsHttpClient getJenkinsHttpClient(Integer createUserId, Integer jenkinsId) {
         JenkinsHttpClient jenkinsHttpClient;
         try {
+            // 获取数据库存储的Jenkins信息（Jenkins的URL，Jenkins用户名，Jenkins密码）
             Jenkins result = getJenkins(createUserId, jenkinsId);
             log.info("根据创建人用户id和Jenkins Id获取Jenkins信息：{}", JSONUtil.toJsonStr(result));
             jenkinsHttpClient = new JenkinsHttpClient(new URI(result.getUrl()), result.getUserName(), result.getPassword());
@@ -75,7 +76,7 @@ public class JenkinsFactory {
     }
 
     /**
-     * 根据环境信息获取数据库中配置的Jenkins服务信息
+     * 根据环境信息获取数据库中配置的Jenkins服务信息（Jenkins的登录名和密码）
      *
      * @param createUserId 创建人id
      * @param jenkinsId    Jenkins主键id

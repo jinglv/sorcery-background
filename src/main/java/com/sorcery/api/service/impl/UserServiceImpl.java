@@ -18,6 +18,8 @@ import org.springframework.util.DigestUtils;
 import java.util.Objects;
 
 /**
+ * 用户操作服务实现
+ *
  * @author jingLv
  * @date 2021/01/18
  */
@@ -42,7 +44,13 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ResultDto<User> getById(Integer id) {
-        return null;
+        User queryUser = new User();
+        queryUser.setId(id);
+        User user = userMapper.selectOne(queryUser);
+        if (Objects.isNull(user)) {
+            return ResultDto.fail("用户不存在");
+        }
+        return ResultDto.success("成功", user);
     }
 
     /**
@@ -85,10 +93,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultDto<Token> login(String username, String password) {
         User user = new User();
+        // 登录密码进行加密，后续进行查询
         String pwd = DigestUtils.md5DigestAsHex((UserConstants.MD5_HEX_SIGN + username + password).getBytes());
         user.setUsername(username);
         user.setPassword(pwd);
-        // 查询已存在的用户
+        // 根据用户名密码查询用户
         User queryUser = userMapper.selectOne(user);
         Assert.notNull(queryUser, "查询已存在的用户信息，用户查询条件User={}", JSONUtil.parse(user));
         // Token信息
@@ -101,7 +110,6 @@ public class UserServiceImpl implements UserService {
                 .setUsername(queryUser.getUsername())
                 .setDefaultJenkinsId(queryUser.getDefaultJenkinsId())
                 .setToken(tokenStr);
-
         TokenDto loginToken = tokenDb.addTokenDto(tokenStr, tokenDto);
         log.info("登陆完成的信息：{}", loginToken);
         return ResultDto.success("成功", token);

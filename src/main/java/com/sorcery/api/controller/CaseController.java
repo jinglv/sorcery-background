@@ -63,7 +63,9 @@ public class CaseController {
             return ResultDto.fail("测试用例名称不能为空");
         }
         Cases cases = new Cases();
-        cases.setCaseData(caseDto.getCaseData()).setCaseName(caseDto.getCaseName()).setRemark(caseDto.getRemark());
+        cases.setCaseData(caseDto.getCaseData())
+                .setCaseName(caseDto.getCaseName())
+                .setRemark(caseDto.getRemark());
         TokenDto tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
         cases.setCreateUserId(tokenDto.getUserId());
         return caseService.save(cases);
@@ -82,6 +84,7 @@ public class CaseController {
         if (ObjectUtils.isEmpty(caseDto.getCaseName())) {
             return ResultDto.fail("测试用例名称不能为空");
         }
+        // 获取文件上传IO流
         InputStream inputStream = caseFile.getInputStream();
         String caseData = IOUtils.toString(inputStream, "UTF-8");
         inputStream.close();
@@ -91,7 +94,9 @@ public class CaseController {
         //BeanUtils.copyProperties(addHogwartsTestCaseDto, hogwartsTestCase);
         // CopyUtil.copyPropertiesCglib(addHogwartsTestCaseDto, hogwartsTestCase);
         //文件类型时需要将文件中的数据进行赋值
-        cases.setCaseData(caseDto.getCaseData()).setCaseName(caseDto.getCaseName()).setRemark(caseDto.getRemark());
+        cases.setCaseData(caseDto.getCaseData())
+                .setCaseName(caseDto.getCaseName())
+                .setRemark(caseDto.getRemark());
         cases.setCaseData(caseData);
         return caseService.save(cases);
     }
@@ -106,7 +111,6 @@ public class CaseController {
     @ApiOperation(value = "分页列表查询")
     @GetMapping("list")
     public ResultDto<PageTableResponse<Cases>> list(HttpServletRequest request, PageTableRequest<QueryCaseListDto> pageTableRequest) {
-
         log.info("测试用例分页列表查询请求参数：{} ", JSONUtil.parse(pageTableRequest));
         if (Objects.isNull(pageTableRequest)) {
             return ResultDto.success("列表查询参数不能为空");
@@ -131,7 +135,6 @@ public class CaseController {
     @ApiOperation(value = "修改测试用例")
     @PutMapping
     public ResultDto<Cases> update(HttpServletRequest request, @RequestBody UpdateCaseDto updateCaseDto) {
-
         log.info("修改测试用例,请求参数：{}", JSONUtil.parse(updateCaseDto));
         if (Objects.isNull(updateCaseDto)) {
             return ResultDto.fail("测试用例信息不能为空");
@@ -166,7 +169,6 @@ public class CaseController {
     @ApiOperation(value = "根据测试用例id查询")
     @GetMapping("{caseId}")
     public ResultDto<Cases> getById(HttpServletRequest request, @PathVariable Integer caseId) {
-
         log.info("根据测试用例id查询测试用例，测试用例id:{}", caseId);
         if (Objects.isNull(caseId)) {
             return ResultDto.fail("caseId不能为空");

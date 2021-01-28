@@ -60,7 +60,7 @@ public class JenkinsClient {
         String jobName = JenkinsUtils.getStartTestJobName(tokenDto.getUserId());
         String jobSign = JenkinsUtils.getJobSignByName(jobName);
         log.info("拼接Job名称：{}", jobName);
-        log.info("拼接Job标识：{}" + jobSign);
+        log.info("拼接Job标识：{}", jobSign);
 
         if (ObjectUtils.isEmpty(jobSign)) {
             return ResultDto.fail("Jenkins的Job标识不符合规范");
@@ -68,7 +68,7 @@ public class JenkinsClient {
         FileReader fileReader = new FileReader(new File("src/main/resources/jenkins/" + jobSign + ".xml"));
         // 获取Jenkins Job的配置文件的内容
         String jobXml = fileReader.readString();
-        log.info("jobXml" + jobXml);
+        log.info("解析Jenkins配置文件内容:{}", jobXml);
         if (ObjectUtils.isEmpty(jobXml)) {
             return ResultDto.fail("Job配置信息不能为空");
         }
