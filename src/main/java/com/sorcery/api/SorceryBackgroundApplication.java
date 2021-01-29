@@ -11,7 +11,6 @@ import tk.mybatis.spring.annotation.MapperScan;
 @SpringBootApplication
 @MapperScan(basePackages = "com.sorcery.api.dao")
 public class SorceryBackgroundApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(SorceryBackgroundApplication.class, args);
     }

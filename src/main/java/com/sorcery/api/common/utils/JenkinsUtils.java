@@ -21,7 +21,7 @@ public class JenkinsUtils {
      */
 
     public static String getStartTestJobName(Integer createUserId) {
-        return "hogwarts_test_mini_start_test_" + createUserId;
+        return "test_" + createUserId;
     }
 
     /**
