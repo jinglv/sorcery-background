@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
+ * 根据token获取的用户信息
+ *
  * @author jingLv
  * @date 2021/01/18
  */

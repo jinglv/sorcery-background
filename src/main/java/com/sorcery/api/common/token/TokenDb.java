@@ -9,20 +9,33 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * 存储用户登录的token信息（类似缓存管理器）
+ *
  * @author jingLv
  * @date 2021/01/18
  */
 @Component
 public class TokenDb {
     /**
-     * key就是token字符串
+     * 定义用于缓存token的map(token=key)， key就是token字符串
      */
     private final Map<String, TokenDto> tokenMap = new HashMap<>();
 
+    /**
+     * 获取在线用户操作（未使用）
+     *
+     * @return 返回在线用户的数量
+     */
     public int getTokenMapSize() {
         return tokenMap.size();
     }
 
+    /**
+     * 根据token获取TokenDto
+     *
+     * @param token 生成的token
+     * @return 返回已获取token的TokenDto
+     */
     public TokenDto getTokenDto(String token) {
         if (ObjectUtils.isEmpty(token)) {
             return new TokenDto();
@@ -31,11 +44,12 @@ public class TokenDb {
     }
 
     /**
+     * 用户登录时获取token和TokenDto
      * 也可以实现成登录用户互踢，2种方式，1是id前后缀，2是id-token=map的key-value
      *
-     * @param token
-     * @param tokenDto
-     * @return
+     * @param token    生成的token
+     * @param tokenDto 接口传入根据token获取的用户信息
+     * @return 返回已添加token的token信息
      */
     public TokenDto addTokenDto(String token, TokenDto tokenDto) {
         if (Objects.isNull(tokenDto)) {
@@ -45,10 +59,10 @@ public class TokenDb {
     }
 
     /**
-     * 移除token
+     * 退出登录时，移除token
      *
-     * @param token
-     * @return
+     * @param token 生成的token
+     * @return 返回已移除的token的token信息
      */
     public TokenDto removeTokenDto(String token) {
         if (Objects.isNull(token)) {
@@ -60,8 +74,8 @@ public class TokenDb {
     /**
      * 验证token是否为null，判断用户是否登录
      *
-     * @param token
-     * @return
+     * @param token 生成的token
+     * @return 返回判断token是否为空
      */
     public boolean isLogin(String token) {
         return tokenMap.get(token) != null;

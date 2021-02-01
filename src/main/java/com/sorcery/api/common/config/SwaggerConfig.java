@@ -40,7 +40,7 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title("Sorcery系统")
                 .description("Sorcery系统系统接口文档")
-                .contact(new Contact("jinglv", "http://localhost:port/", "lvjing0705@126.com"))
+                .contact(new Contact("jinglv", "https://github.com/jinglv/sorcery-background", "lvjing0705@126.com"))
                 .version("1.0")
                 .build();
     }

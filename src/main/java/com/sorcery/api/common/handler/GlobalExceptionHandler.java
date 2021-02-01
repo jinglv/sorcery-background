@@ -25,13 +25,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Slf4j
 public class GlobalExceptionHandler {
     /**
-     * 业务异常
+     * 自定义业务异常
      *
      * @param se 定义业务异常类
      * @return 统一异常处理结果
      */
     @ExceptionHandler(ServiceException.class)
     public ResultDto<ServiceException> serviceExceptionHandler(ServiceException se) {
+        log.error("业务异常，", se);
         return resultFormat(se);
     }
 
@@ -47,7 +48,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Throwable异常
+     * Throwable异常，Http状态为500
      *
      * @param th Throwable异常类
      * @return 统一异常处理结果
@@ -61,14 +62,14 @@ public class GlobalExceptionHandler {
     }
 
     private <T extends Throwable> ResultDto<T> resultFormat(T ex) {
-        log.error("全局异常捕获 == ", ex);
+        log.error("全局异常捕获，", ex);
         ResultDto<T> resultDto = ResultDto.newInstance();
         resultDto.setAsFailure();
         if (ex instanceof ServiceException) {
             ServiceException serviceException = (ServiceException) ex;
             resultDto.setMessage(serviceException.getMessage());
         } else {
-            resultDto.setMessage("服务暂不可用-" + ex.getMessage());
+            resultDto.setMessage("服务暂不可用，" + ex.getMessage());
         }
         return resultDto;
     }

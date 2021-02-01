@@ -105,7 +105,7 @@ public class TaskServiceImpl implements TaskService {
                 taskCaseRel.setUpdateTime(new Date());
                 testTaskCaseList.add(taskCaseRel);
             }
-            log.info("=====测试任务详情保存-落库入参====：" + JSONUtil.toJsonStr(testTaskCaseList));
+            log.info("测试任务详情保存，存入数据库参数：{}", JSONUtil.toJsonStr(testTaskCaseList));
             taskCaseRelMapper.insertList(testTaskCaseList);
         }
         return ResultDto.success("成功", task);
@@ -212,7 +212,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResultDto<String> startTask(TokenDto tokenDto, RequestInfoDto requestInfoDto, Task task) throws IOException {
-        log.info("测试任务执行-Service请求参数：{}, 测试任务请求参数：{}", JSONUtil.toJsonStr(requestInfoDto), JSONUtil.toJsonStr(task));
+        log.info("测试任务执行, 请求参数：{}, 测试任务请求参数：{}", JSONUtil.toJsonStr(requestInfoDto), JSONUtil.toJsonStr(task));
         if (Objects.isNull(task)) {
             return ResultDto.fail("测试任务参数不能为空");
         }

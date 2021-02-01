@@ -23,7 +23,7 @@ import java.util.Objects;
  * @date 2021/01/26
  */
 @Slf4j
-@Api(tags = "报告管理")
+@Api(tags = "测试报告管理")
 @RestController
 @RequestMapping("/report")
 public class ReportController {
