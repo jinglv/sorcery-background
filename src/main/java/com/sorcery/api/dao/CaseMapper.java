@@ -1,7 +1,7 @@
 package com.sorcery.api.dao;
 
 import com.sorcery.api.common.MySqlExtensionMapper;
-import com.sorcery.api.dto.cases.QueryCaseListDto;
+import com.sorcery.api.dto.cases.QueryCaseListDTO;
 import com.sorcery.api.entity.Cases;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -21,7 +21,7 @@ public interface CaseMapper extends MySqlExtensionMapper<Cases> {
      * @param params
      * @return
      */
-    Integer count(@Param("params") QueryCaseListDto params);
+    Integer count(@Param("params") QueryCaseListDTO params);
 
     /**
      * 列表分页查询
@@ -31,6 +31,6 @@ public interface CaseMapper extends MySqlExtensionMapper<Cases> {
      * @param pageSize
      * @return
      */
-    List<Cases> list(@Param("params") QueryCaseListDto params, @Param("pageNum") Integer pageNum,
+    List<Cases> list(@Param("params") QueryCaseListDTO params, @Param("pageNum") Integer pageNum,
                      @Param("pageSize") Integer pageSize);
 }

@@ -4,9 +4,9 @@ import cn.hutool.core.lang.Assert;
 import com.sorcery.api.common.token.TokenDb;
 import com.sorcery.api.dao.JenkinsMapper;
 import com.sorcery.api.dao.UserMapper;
-import com.sorcery.api.dto.ResultDto;
-import com.sorcery.api.dto.TokenDto;
-import com.sorcery.api.dto.jenkins.QueryJenkinsListDto;
+import com.sorcery.api.dto.ResultDTO;
+import com.sorcery.api.dto.TokenDTO;
+import com.sorcery.api.dto.jenkins.QueryJenkinsListDTO;
 import com.sorcery.api.dto.page.PageTableRequest;
 import com.sorcery.api.dto.page.PageTableResponse;
 import com.sorcery.api.entity.Jenkins;
@@ -47,7 +47,7 @@ public class JenkinsServiceImpl implements JenkinsService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResultDto<Jenkins> save(TokenDto tokenDto, Jenkins jenkins) {
+    public ResultDTO<Jenkins> save(TokenDTO tokenDto, Jenkins jenkins) {
         int insert = jenkinsMapper.insertUseGeneratedKeys(jenkins);
         Assert.isFalse(insert != 1, "新增Jenkins信息失败");
         Integer defaultJenkinsFlag = jenkins.getDefaultJenkinsFlag();
@@ -62,7 +62,7 @@ public class JenkinsServiceImpl implements JenkinsService {
             int update = userMapper.updateByPrimaryKeySelective(user);
             Assert.isFalse(update != 1, "更新用户信息失败");
         }
-        return ResultDto.success("成功", jenkins);
+        return ResultDTO.success("成功", jenkins);
     }
 
     /**
@@ -74,14 +74,14 @@ public class JenkinsServiceImpl implements JenkinsService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResultDto<Jenkins> delete(Integer jenkinsId, TokenDto tokenDto) {
+    public ResultDTO<Jenkins> delete(Integer jenkinsId, TokenDTO tokenDto) {
         Jenkins queryJenkins = new Jenkins();
         queryJenkins.setId(jenkinsId);
         queryJenkins.setCreateUserId(tokenDto.getUserId());
         Jenkins result = jenkinsMapper.selectOne(queryJenkins);
         //如果为空，则提示，也可以直接返回成功
         if (Objects.isNull(result)) {
-            return ResultDto.fail("未查到Jenkins信息");
+            return ResultDTO.fail("未查到Jenkins信息");
         }
         User queryUser = new User();
         queryUser.setId(tokenDto.getUserId());
@@ -99,7 +99,7 @@ public class JenkinsServiceImpl implements JenkinsService {
         }
         int delete = jenkinsMapper.deleteByPrimaryKey(jenkinsId);
         Assert.isFalse(delete != 1, "删除Jenkins信息失败");
-        return ResultDto.success("成功");
+        return ResultDTO.success("成功");
     }
 
     /**
@@ -111,7 +111,7 @@ public class JenkinsServiceImpl implements JenkinsService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResultDto<Jenkins> update(TokenDto tokenDto, Jenkins jenkins) {
+    public ResultDTO<Jenkins> update(TokenDTO tokenDto, Jenkins jenkins) {
         Jenkins queryJenkins = new Jenkins();
         // 根据jenkinsId查询Jenkins信息
         queryJenkins.setId(jenkins.getId());
@@ -119,7 +119,7 @@ public class JenkinsServiceImpl implements JenkinsService {
         Jenkins result = jenkinsMapper.selectOne(queryJenkins);
         // 如果为空，则提示，也可以直接返回成功
         if (Objects.isNull(result)) {
-            return ResultDto.fail("未查到Jenkins信息");
+            return ResultDTO.fail("未查到Jenkins信息");
         }
         jenkins.setCreateTime(result.getCreateTime());
         jenkins.setUpdateTime(new Date());
@@ -137,7 +137,7 @@ public class JenkinsServiceImpl implements JenkinsService {
             int updateUser = userMapper.updateByPrimaryKey(user);
             Assert.isFalse(updateUser != 1, "更新用户信息失败");
         }
-        return ResultDto.success("成功");
+        return ResultDTO.success("成功");
     }
 
     /**
@@ -148,14 +148,14 @@ public class JenkinsServiceImpl implements JenkinsService {
      * @return 返回接口Jenkins查询结果
      */
     @Override
-    public ResultDto<Jenkins> getById(Integer jenkinsId, Integer createUserId) {
+    public ResultDTO<Jenkins> getById(Integer jenkinsId, Integer createUserId) {
         Jenkins queryJenkins = new Jenkins();
         queryJenkins.setId(jenkinsId);
         queryJenkins.setCreateUserId(createUserId);
         Jenkins result = jenkinsMapper.selectOne(queryJenkins);
         //如果为空，则提示，也可以直接返回成功
         if (Objects.isNull(result)) {
-            ResultDto.fail("未查到Jenkins信息");
+            ResultDTO.fail("未查到Jenkins信息");
         }
         User queryUser = new User();
         queryUser.setId(createUserId);
@@ -164,7 +164,7 @@ public class JenkinsServiceImpl implements JenkinsService {
         if (result.getId().equals(defaultJenkinsId)) {
             result.setDefaultJenkinsFlag(1);
         }
-        return ResultDto.success("成功", result);
+        return ResultDTO.success("成功", result);
     }
 
     /**
@@ -174,8 +174,8 @@ public class JenkinsServiceImpl implements JenkinsService {
      * @return 返回接口Jenkins分页查询结果
      */
     @Override
-    public ResultDto<PageTableResponse<Jenkins>> list(PageTableRequest<QueryJenkinsListDto> pageTableRequest) {
-        QueryJenkinsListDto params = pageTableRequest.getParams();
+    public ResultDTO<PageTableResponse<Jenkins>> list(PageTableRequest<QueryJenkinsListDTO> pageTableRequest) {
+        QueryJenkinsListDTO params = pageTableRequest.getParams();
         Integer pageNum = pageTableRequest.getPageNum();
         Integer pageSize = pageTableRequest.getPageSize();
         Integer createUserId = params.getCreateUserId();
@@ -197,6 +197,6 @@ public class JenkinsServiceImpl implements JenkinsService {
         PageTableResponse<Jenkins> jenkinsPageTableResponse = new PageTableResponse<>();
         jenkinsPageTableResponse.setRecordsTotal(recordsTotal);
         jenkinsPageTableResponse.setData(jenkinsList);
-        return ResultDto.success("成功", jenkinsPageTableResponse);
+        return ResultDTO.success("成功", jenkinsPageTableResponse);
     }
 }

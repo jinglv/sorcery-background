@@ -4,8 +4,8 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.json.JSONUtil;
 import com.sorcery.api.constants.Constants;
 import com.sorcery.api.dao.CaseMapper;
-import com.sorcery.api.dto.ResultDto;
-import com.sorcery.api.dto.cases.QueryCaseListDto;
+import com.sorcery.api.dto.ResultDTO;
+import com.sorcery.api.dto.cases.QueryCaseListDTO;
 import com.sorcery.api.dto.page.PageTableRequest;
 import com.sorcery.api.dto.page.PageTableResponse;
 import com.sorcery.api.entity.Cases;
@@ -43,12 +43,12 @@ public class CaseServiceImpl implements CaseService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResultDto<Cases> save(Cases cases) {
+    public ResultDTO<Cases> save(Cases cases) {
         // 设置测试用例未逻辑删除的标识
         cases.setDelFlag(Constants.DEL_FLAG_ONE);
         int result = caseMapper.insertUseGeneratedKeys(cases);
         Assert.isFalse(result != 1, "新增测试用例失败");
-        return ResultDto.success("成功", cases);
+        return ResultDTO.success("成功", cases);
     }
 
     /**
@@ -59,7 +59,7 @@ public class CaseServiceImpl implements CaseService {
      * @return 返回接口测试用例删除结果
      */
     @Override
-    public ResultDto<Cases> delete(Integer caseId, Integer createUserId) {
+    public ResultDTO<Cases> delete(Integer caseId, Integer createUserId) {
         // 根据传入的测试用例id和创建人id，查询测试用例信息，且该用例未被逻辑删除
         Cases queryCase = new Cases();
         queryCase.setId(caseId)
@@ -68,14 +68,14 @@ public class CaseServiceImpl implements CaseService {
         Cases result = caseMapper.selectOne(queryCase);
         // 如果为空，则提示
         if (Objects.isNull(result)) {
-            return ResultDto.fail("未查到测试用例信息");
+            return ResultDTO.fail("未查到测试用例信息");
         }
         // 设置测试用例逻辑删除（del_flag=0）
         result.setDelFlag(Constants.DEL_FLAG_ZERO);
         // 数据库更新测试用例
         int update = caseMapper.updateByPrimaryKey(result);
         Assert.isFalse(update != 1, "逻辑删除（更新）测试用例失败");
-        return ResultDto.success("成功");
+        return ResultDTO.success("成功");
     }
 
     /**
@@ -85,7 +85,7 @@ public class CaseServiceImpl implements CaseService {
      * @return 返回接口测试用例更新结果
      */
     @Override
-    public ResultDto<Cases> update(Cases cases) {
+    public ResultDTO<Cases> update(Cases cases) {
         // 根据传入的测试用例id和创建人id，查询测试用例信息，且该用例未被逻辑删除
         Cases queryCase = new Cases();
         queryCase.setId(cases.getId())
@@ -93,7 +93,7 @@ public class CaseServiceImpl implements CaseService {
                 .setDelFlag(Constants.DEL_FLAG_ONE);
         Cases result = caseMapper.selectOne(queryCase);
         if (Objects.isNull(result)) {
-            return ResultDto.fail("未查到测试用例信息");
+            return ResultDTO.fail("未查到测试用例信息");
         }
         // 修改测试用例信息
         cases.setCreateTime(result.getCreateTime());
@@ -102,7 +102,7 @@ public class CaseServiceImpl implements CaseService {
         // 数据库更新测试用例
         int update = caseMapper.updateByPrimaryKey(cases);
         Assert.isFalse(update != 1, "修改测试用例信息失败");
-        return ResultDto.success("成功");
+        return ResultDTO.success("成功");
     }
 
     /**
@@ -113,7 +113,7 @@ public class CaseServiceImpl implements CaseService {
      * @return 返回接口测试用例查询结果
      */
     @Override
-    public ResultDto<Cases> getById(Integer caseId, Integer createUserId) {
+    public ResultDTO<Cases> getById(Integer caseId, Integer createUserId) {
         // 根据传入的测试用例id和创建人id，查询测试用例信息，且该用例未被逻辑删除
         Cases queryCase = new Cases();
         queryCase.setId(caseId)
@@ -122,9 +122,9 @@ public class CaseServiceImpl implements CaseService {
         Cases result = caseMapper.selectOne(queryCase);
         //如果为空，则提示，也可以直接返回成功
         if (Objects.isNull(result)) {
-            return ResultDto.fail("未查到测试用例信息");
+            return ResultDTO.fail("未查到测试用例信息");
         }
-        return ResultDto.success("成功", result);
+        return ResultDTO.success("成功", result);
     }
 
     /**
@@ -134,9 +134,9 @@ public class CaseServiceImpl implements CaseService {
      * @return 返回接口测试用例分页查询结果
      */
     @Override
-    public ResultDto<PageTableResponse<Cases>> list(PageTableRequest<QueryCaseListDto> pageTableRequest) {
+    public ResultDTO<PageTableResponse<Cases>> list(PageTableRequest<QueryCaseListDTO> pageTableRequest) {
         // 测试用例分页列表
-        QueryCaseListDto params = pageTableRequest.getParams();
+        QueryCaseListDTO params = pageTableRequest.getParams();
         Integer pageNum = pageTableRequest.getPageNum();
         Integer pageSize = pageTableRequest.getPageSize();
         //总数
@@ -147,7 +147,7 @@ public class CaseServiceImpl implements CaseService {
         PageTableResponse<Cases> casesPageTableResponse = new PageTableResponse<>();
         casesPageTableResponse.setRecordsTotal(recordsTotal);
         casesPageTableResponse.setData(hogwartsTestJenkinsList);
-        return ResultDto.success("成功", casesPageTableResponse);
+        return ResultDTO.success("成功", casesPageTableResponse);
     }
 
     /**
@@ -158,9 +158,9 @@ public class CaseServiceImpl implements CaseService {
      * @return 返回接口测试用例分页结果
      */
     @Override
-    public ResultDto<String> getCaseDataById(Integer createUserId, Integer caseId) {
+    public ResultDTO<String> getCaseDataById(Integer createUserId, Integer caseId) {
         if (Objects.isNull(caseId)) {
-            return ResultDto.fail("用例id为空");
+            return ResultDTO.fail("用例id为空");
         }
         Cases queryCase = new Cases();
         queryCase.setCreateUserId(createUserId).setId(caseId);
@@ -168,11 +168,11 @@ public class CaseServiceImpl implements CaseService {
 
         Cases result = caseMapper.selectOne(queryCase);
         if (Objects.isNull(result)) {
-            return ResultDto.fail("测试用例信息未查到");
+            return ResultDTO.fail("测试用例信息未查到");
         }
         if (ObjectUtils.isEmpty(result.getCaseData())) {
-            return ResultDto.fail("测试用例原始数据未查到");
+            return ResultDTO.fail("测试用例原始数据未查到");
         }
-        return ResultDto.success(result.getCaseData());
+        return ResultDTO.success(result.getCaseData());
     }
 }

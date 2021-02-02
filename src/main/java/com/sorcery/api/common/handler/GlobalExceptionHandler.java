@@ -2,7 +2,7 @@ package com.sorcery.api.common.handler;
 
 
 import com.sorcery.api.common.exception.ServiceException;
-import com.sorcery.api.dto.ResultDto;
+import com.sorcery.api.dto.ResultDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
      * @return 统一异常处理结果
      */
     @ExceptionHandler(ServiceException.class)
-    public ResultDto<ServiceException> serviceExceptionHandler(ServiceException se) {
+    public ResultDTO<ServiceException> serviceExceptionHandler(ServiceException se) {
         log.error("业务异常，", se);
         return resultFormat(se);
     }
@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
      * @return 统一异常处理结果
      */
     @ExceptionHandler(Exception.class)
-    public ResultDto<Exception> exception(Exception ex) {
+    public ResultDTO<Exception> exception(Exception ex) {
         return resultFormat(ex);
     }
 
@@ -55,15 +55,22 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResultDto<Throwable> exception(Throwable th) {
-        log.error("服务暂不可用", th);
+    public ResultDTO<Throwable> exception(Throwable th) {
+        log.error("服务暂不可用:{}", th.getMessage());
         return resultFormat(th);
 
     }
 
-    private <T extends Throwable> ResultDto<T> resultFormat(T ex) {
+    /**
+     * 异常结果统一格式化
+     *
+     * @param ex  异常类型
+     * @param <T> 泛型类型
+     * @return 返回结果ResultDto
+     */
+    private <T extends Throwable> ResultDTO<T> resultFormat(T ex) {
         log.error("全局异常捕获，", ex);
-        ResultDto<T> resultDto = ResultDto.newInstance();
+        ResultDTO<T> resultDto = ResultDTO.newInstance();
         resultDto.setAsFailure();
         if (ex instanceof ServiceException) {
             ServiceException serviceException = (ServiceException) ex;

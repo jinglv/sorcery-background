@@ -1,8 +1,8 @@
 package com.sorcery.api.dao;
 
 import com.sorcery.api.common.MySqlExtensionMapper;
-import com.sorcery.api.dto.report.TaskDataDto;
-import com.sorcery.api.dto.task.QueryTaskListDto;
+import com.sorcery.api.dto.report.TaskDataDTO;
+import com.sorcery.api.dto.task.QueryTaskListDTO;
 import com.sorcery.api.entity.Task;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -22,7 +22,7 @@ public interface TaskMapper extends MySqlExtensionMapper<Task> {
      * @param createUserId 创建人id
      * @return 返回统计数据
      */
-    List<TaskDataDto> getTaskByType(@Param("createUserId") Integer createUserId);
+    List<TaskDataDTO> getTaskByType(@Param("createUserId") Integer createUserId);
 
     /**
      * 根据任务状态进行查询
@@ -30,7 +30,7 @@ public interface TaskMapper extends MySqlExtensionMapper<Task> {
      * @param createUserId 创建人id
      * @return 返回统计数据
      */
-    List<TaskDataDto> getTaskByStatus(@Param("createUserId") Integer createUserId);
+    List<TaskDataDTO> getTaskByStatus(@Param("createUserId") Integer createUserId);
 
     /**
      * 根据任务数量进行查询
@@ -49,7 +49,7 @@ public interface TaskMapper extends MySqlExtensionMapper<Task> {
      * @param params 查询参数
      * @return 返回统计结果
      */
-    Integer count(@Param("params") QueryTaskListDto params);
+    Integer count(@Param("params") QueryTaskListDTO params);
 
     /**
      * 列表分页查询
@@ -59,7 +59,7 @@ public interface TaskMapper extends MySqlExtensionMapper<Task> {
      * @param pageSize 页数
      * @return 返回查询结果
      */
-    List<Task> list(@Param("params") QueryTaskListDto params, @Param("pageNum") Integer pageNum,
+    List<Task> list(@Param("params") QueryTaskListDTO params, @Param("pageNum") Integer pageNum,
                     @Param("pageSize") Integer pageSize);
 
 }

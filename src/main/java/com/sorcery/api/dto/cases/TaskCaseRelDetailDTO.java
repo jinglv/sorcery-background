@@ -1,6 +1,6 @@
 package com.sorcery.api.dto.cases;
 
-import com.sorcery.api.dto.BaseDto;
+import com.sorcery.api.dto.BaseDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class TaskCaseRelDetailDto extends BaseDto {
+public class TaskCaseRelDetailDTO extends BaseDTO {
     /**
      * 主键
      */

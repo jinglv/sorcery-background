@@ -1,9 +1,9 @@
 package com.sorcery.api.service;
 
-import com.sorcery.api.dto.ResultDto;
-import com.sorcery.api.dto.TokenDto;
-import com.sorcery.api.dto.report.AllureReportDto;
-import com.sorcery.api.dto.report.TaskReportDto;
+import com.sorcery.api.dto.ResultDTO;
+import com.sorcery.api.dto.TokenDTO;
+import com.sorcery.api.dto.report.AllureReportDTO;
+import com.sorcery.api.dto.report.TaskReportDTO;
 import com.sorcery.api.entity.Task;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public interface ReportService {
      * @param taskId   执行任务id
      * @return 返回接口allure测试报告
      */
-    ResultDto<AllureReportDto> getAllureReport(TokenDto tokenDto, Integer taskId);
+    ResultDTO<AllureReportDTO> getAllureReport(TokenDTO tokenDto, Integer taskId);
 
     /**
      * 根据任务类型获取任务统计信息
@@ -28,7 +28,7 @@ public interface ReportService {
      * @param tokenDto token信息
      * @return 接口返回报告查询结果
      */
-    ResultDto<TaskReportDto> getTaskByType(TokenDto tokenDto);
+    ResultDTO<TaskReportDTO> getTaskByType(TokenDTO tokenDto);
 
     /**
      * 根据任务状态获取任务统计信息
@@ -36,7 +36,7 @@ public interface ReportService {
      * @param tokenDto token信息
      * @return 接口返回报告查询结果
      */
-    ResultDto<TaskReportDto> getTaskByStatus(TokenDto tokenDto);
+    ResultDTO<TaskReportDTO> getTaskByStatus(TokenDTO tokenDto);
 
     /**
      * 任务中用例的数量统计信息
@@ -46,5 +46,5 @@ public interface ReportService {
      * @param end      按时间倒叙结束序号
      * @return 接口返回报告查询结果
      */
-    ResultDto<List<Task>> getTaskByCaseCount(TokenDto tokenDto, Integer start, Integer end);
+    ResultDTO<List<Task>> getTaskByCaseCount(TokenDTO tokenDto, Integer start, Integer end);
 }

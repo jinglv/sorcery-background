@@ -1,6 +1,6 @@
 package com.sorcery.api.dto.jenkins;
 
-import com.sorcery.api.dto.BaseDto;
+import com.sorcery.api.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @ApiModel(value = "更新Jenkins对象")
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class UpdateJenkinsDto extends BaseDto {
+public class UpdateJenkinsDTO extends BaseDTO {
     /**
      * 主键
      */

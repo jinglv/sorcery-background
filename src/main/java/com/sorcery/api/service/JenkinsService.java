@@ -1,8 +1,8 @@
 package com.sorcery.api.service;
 
-import com.sorcery.api.dto.ResultDto;
-import com.sorcery.api.dto.TokenDto;
-import com.sorcery.api.dto.jenkins.QueryJenkinsListDto;
+import com.sorcery.api.dto.ResultDTO;
+import com.sorcery.api.dto.TokenDTO;
+import com.sorcery.api.dto.jenkins.QueryJenkinsListDTO;
 import com.sorcery.api.dto.page.PageTableRequest;
 import com.sorcery.api.dto.page.PageTableResponse;
 import com.sorcery.api.entity.Jenkins;
@@ -19,7 +19,7 @@ public interface JenkinsService {
      * @param jenkins  Jenkins信息
      * @return 返回接口Jenkins保存结果
      */
-    ResultDto<Jenkins> save(TokenDto tokenDto, Jenkins jenkins);
+    ResultDTO<Jenkins> save(TokenDTO tokenDto, Jenkins jenkins);
 
     /**
      * 删除Jenkins信息
@@ -28,7 +28,7 @@ public interface JenkinsService {
      * @param jenkinsId jenkins主键id
      * @return 返回接口Jenkins删除结果
      */
-    ResultDto<Jenkins> delete(Integer jenkinsId, TokenDto tokenDto);
+    ResultDTO<Jenkins> delete(Integer jenkinsId, TokenDTO tokenDto);
 
     /**
      * 修改Jenkins信息
@@ -37,7 +37,7 @@ public interface JenkinsService {
      * @param jenkins  jenkins更新信息
      * @return 返回接口Jenkins更新结果
      */
-    ResultDto<Jenkins> update(TokenDto tokenDto, Jenkins jenkins);
+    ResultDTO<Jenkins> update(TokenDTO tokenDto, Jenkins jenkins);
 
     /**
      * 根据id查询Jenkins信息
@@ -46,7 +46,7 @@ public interface JenkinsService {
      * @param createUserId 创建人用户id
      * @return 返回接口Jenkins查询结果
      */
-    ResultDto<Jenkins> getById(Integer jenkinsId, Integer createUserId);
+    ResultDTO<Jenkins> getById(Integer jenkinsId, Integer createUserId);
 
     /**
      * 查询Jenkins信息列表
@@ -54,6 +54,6 @@ public interface JenkinsService {
      * @param pageTableRequest 分页查询
      * @return 返回接口Jenkins分页查询结果
      */
-    ResultDto<PageTableResponse<Jenkins>> list(PageTableRequest<QueryJenkinsListDto> pageTableRequest);
+    ResultDTO<PageTableResponse<Jenkins>> list(PageTableRequest<QueryJenkinsListDTO> pageTableRequest);
 
 }

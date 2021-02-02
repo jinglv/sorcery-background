@@ -1,6 +1,6 @@
 package com.sorcery.api.dto.task;
 
-import com.sorcery.api.dto.BaseDto;
+import com.sorcery.api.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "修改任务状态对象")
 @Data
-public class UpdateTaskStatusDto extends BaseDto {
+public class UpdateTaskStatusDTO extends BaseDTO {
     /**
      * ID
      */

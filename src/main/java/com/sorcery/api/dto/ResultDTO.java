@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
-
 /**
  * 基础返回对象
  *
@@ -15,10 +13,8 @@ import java.io.Serializable;
  */
 
 @ApiModel(value = "基础返回对象", description = "基础返回对象")
-public class ResultDto<T> implements Serializable {
-
-    private static final long serialVersionUID = -7139082970364501603L;
-
+public class ResultDTO<T> extends BaseDTO {
+    
     /**
      * 响应码
      */
@@ -43,8 +39,8 @@ public class ResultDto<T> implements Serializable {
     @Getter
     private T data;
 
-    public static <T> ResultDto<T> newInstance() {
-        return new ResultDto<>();
+    public static <T> ResultDTO<T> newInstance() {
+        return new ResultDTO<>();
     }
 
     /**
@@ -54,12 +50,12 @@ public class ResultDto<T> implements Serializable {
         this.resultCode = 1;
     }
 
-    public static <T> ResultDto<T> success(String message) {
+    public static <T> ResultDTO<T> success(String message) {
         return success(message, null);
     }
 
-    public static <T> ResultDto<T> success(String message, T data) {
-        ResultDto<T> resultDto = new ResultDto<>();
+    public static <T> ResultDTO<T> success(String message, T data) {
+        ResultDTO<T> resultDto = new ResultDTO<>();
         resultDto.setAsSuccess();
         resultDto.setMessage(message);
         resultDto.setData(data);
@@ -73,12 +69,12 @@ public class ResultDto<T> implements Serializable {
         this.resultCode = 0;
     }
 
-    public static <T> ResultDto<T> fail(String message) {
+    public static <T> ResultDTO<T> fail(String message) {
         return fail(message, null);
     }
 
-    public static <T> ResultDto<T> fail(String message, T data) {
-        ResultDto<T> resultDto = new ResultDto<>();
+    public static <T> ResultDTO<T> fail(String message, T data) {
+        ResultDTO<T> resultDto = new ResultDTO<>();
         resultDto.setAsFailure();
         resultDto.setMessage(message);
         resultDto.setData(data);

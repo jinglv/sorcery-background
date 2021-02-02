@@ -19,14 +19,14 @@
         <result column="test_command" jdbcType="LONGVARCHAR" property="testCommand"/>
     </resultMap>
 
-    <select id="getTaskByType" resultType="com.sorcery.api.dto.report.TaskDataDto">
+    <select id="getTaskByType" resultType="com.sorcery.api.dto.report.TaskDataDTO">
         SELECT count(1) taskCount, `task_type` taskKey
         FROM `test_task`
         WHERE `create_user_id` = #{createUserId}
         GROUP BY `task_type`
     </select>
 
-    <select id="getTaskByStatus" resultType="com.sorcery.api.dto.report.TaskDataDto">
+    <select id="getTaskByStatus" resultType="com.sorcery.api.dto.report.TaskDataDTO">
         SELECT count(1) taskCount, `status` taskKey
         FROM `test_task`
         WHERE `create_user_id` = #{createUserId}

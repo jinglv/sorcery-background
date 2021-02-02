@@ -1,6 +1,7 @@
 package com.sorcery.api.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
@@ -9,9 +10,10 @@ import lombok.experimental.Accessors;
  * @author jingLv
  * @date 2021/01/18
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
-public class TokenDto {
+public class TokenDTO extends BaseDTO {
     /**
      * 用户id
      */

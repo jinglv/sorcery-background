@@ -1,6 +1,6 @@
 package com.sorcery.api.dto.task;
 
-import com.sorcery.api.dto.BaseDto;
+import com.sorcery.api.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "执行测试任务类", description = "请求参数类")
 @Data
-public class StartTestDto extends BaseDto {
+public class StartTestDTO extends BaseDTO {
     /**
      * ID
      */

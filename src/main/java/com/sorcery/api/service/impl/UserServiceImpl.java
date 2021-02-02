@@ -6,8 +6,8 @@ import com.sorcery.api.common.token.Token;
 import com.sorcery.api.common.token.TokenDb;
 import com.sorcery.api.constants.UserConstants;
 import com.sorcery.api.dao.UserMapper;
-import com.sorcery.api.dto.ResultDto;
-import com.sorcery.api.dto.TokenDto;
+import com.sorcery.api.dto.ResultDTO;
+import com.sorcery.api.dto.TokenDTO;
 import com.sorcery.api.entity.User;
 import com.sorcery.api.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -43,14 +43,14 @@ public class UserServiceImpl implements UserService {
      * @return 返回接口用户结果
      */
     @Override
-    public ResultDto<User> getById(Integer id) {
+    public ResultDTO<User> getById(Integer id) {
         User queryUser = new User();
         queryUser.setId(id);
         User user = userMapper.selectOne(queryUser);
         if (Objects.isNull(user)) {
-            return ResultDto.fail("用户不存在");
+            return ResultDTO.fail("用户不存在");
         }
-        return ResultDto.success("成功", user);
+        return ResultDTO.success("成功", user);
     }
 
     /**
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResultDto<User> save(User user) {
+    public ResultDTO<User> save(User user) {
         // 获取用户名
         String username = user.getUsername();
         // 获取密码
@@ -72,15 +72,15 @@ public class UserServiceImpl implements UserService {
         // 根据用户名在数据库中查询数据
         User queryResult = userMapper.selectOne(queryUser);
         if (Objects.nonNull(queryResult)) {
-            return ResultDto.fail("用户名已存在");
+            return ResultDTO.fail("用户名已存在");
         }
-        // 保存密码进行加密
+        // 密码进行加密，并保存
         String newPwd = DigestUtils.md5DigestAsHex((UserConstants.MD5_HEX_SIGN + username + password).getBytes());
         user.setPassword(newPwd);
         // 插入用户注册数据
         int insert = userMapper.insert(user);
-        Assert.isFalse(insert != 1, "用户注册时失败");
-        return ResultDto.success("成功", user);
+        Assert.isFalse(insert != 1, "用户注册失败");
+        return ResultDTO.success("成功", user);
     }
 
     /**
@@ -91,27 +91,30 @@ public class UserServiceImpl implements UserService {
      * @return 返回接口用户登录结果
      */
     @Override
-    public ResultDto<Token> login(String username, String password) {
-        User user = new User();
+    public ResultDTO<TokenDTO> login(String username, String password) {
         // 登录密码进行加密，后续进行查询
         String pwd = DigestUtils.md5DigestAsHex((UserConstants.MD5_HEX_SIGN + username + password).getBytes());
+        // 实例用户信息
+        User user = new User();
         user.setUsername(username);
         user.setPassword(pwd);
         // 根据用户名密码查询用户
         User queryUser = userMapper.selectOne(user);
-        Assert.notNull(queryUser, "查询已存在的用户信息，用户查询条件User={}", JSONUtil.parse(user));
+        Assert.notNull(queryUser, "用户信息已存在，查询条件User={}", JSONUtil.parse(user));
         // Token信息
         Token token = new Token();
         String tokenStr = DigestUtils.md5DigestAsHex((System.currentTimeMillis() + username + password).getBytes());
         token.setToken(tokenStr);
         // 将登陆信息存入token对象中
-        TokenDto tokenDto = new TokenDto();
+        TokenDTO tokenDto = new TokenDTO();
         tokenDto.setUserId(queryUser.getId())
                 .setUsername(queryUser.getUsername())
                 .setDefaultJenkinsId(queryUser.getDefaultJenkinsId())
                 .setToken(tokenStr);
-        TokenDto loginToken = tokenDb.addTokenDto(tokenStr, tokenDto);
-        log.info("登陆完成的信息：{}", loginToken);
-        return ResultDto.success("成功", token);
+        log.info("登录存入的token信息：{}", JSONUtil.parse(tokenDto));
+        // 将Token信息存入TokenDb中
+        TokenDTO loginToken = tokenDb.addTokenDto(tokenStr, tokenDto);
+        log.info("登陆完成的信息：{}", JSONUtil.parse(loginToken));
+        return ResultDTO.success("成功", tokenDto);
     }
 }

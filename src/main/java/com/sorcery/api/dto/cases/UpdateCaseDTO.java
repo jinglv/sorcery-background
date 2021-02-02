@@ -1,6 +1,6 @@
 package com.sorcery.api.dto.cases;
 
-import com.sorcery.api.dto.BaseDto;
+import com.sorcery.api.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -8,16 +8,22 @@ import lombok.EqualsAndHashCode;
 
 /**
  * @author jingLv
- * @date 2021/01/19
+ * @date 2021/01/21
  */
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "添加测试用例对象")
+@ApiModel(value = "修改测试用例对象")
 @Data
-public class CaseDto extends BaseDto {
+public class UpdateCaseDTO extends BaseDTO {
+    /**
+     * 主键
+     */
+    @ApiModelProperty(value = "测试用例主键", required = true)
+    private Integer id;
+
     /**
      * 测试用例数据
      */
-    @ApiModelProperty(value = "测试用例数据", notes = "文件类型case时不传值", required = true)
+    @ApiModelProperty(value = "测试用例数据", required = true)
     private String caseData;
 
     /**
@@ -29,6 +35,6 @@ public class CaseDto extends BaseDto {
     /**
      * 备注
      */
-    @ApiModelProperty(value = "测试用例备注")
+    @ApiModelProperty(value = "测试用例备注", required = true)
     private String remark;
 }

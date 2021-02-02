@@ -1,6 +1,6 @@
 package com.sorcery.api.common.token;
 
-import com.sorcery.api.dto.TokenDto;
+import com.sorcery.api.dto.TokenDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
@@ -19,7 +19,7 @@ public class TokenDb {
     /**
      * 定义用于缓存token的map(token=key)， key就是token字符串
      */
-    private final Map<String, TokenDto> tokenMap = new HashMap<>();
+    private final Map<String, TokenDTO> tokenMap = new HashMap<>();
 
     /**
      * 获取在线用户操作（未使用）
@@ -36,9 +36,9 @@ public class TokenDb {
      * @param token 生成的token
      * @return 返回已获取token的TokenDto
      */
-    public TokenDto getTokenDto(String token) {
+    public TokenDTO getTokenDto(String token) {
         if (ObjectUtils.isEmpty(token)) {
-            return new TokenDto();
+            return new TokenDTO();
         }
         return tokenMap.get(token);
     }
@@ -51,7 +51,7 @@ public class TokenDb {
      * @param tokenDto 接口传入根据token获取的用户信息
      * @return 返回已添加token的token信息
      */
-    public TokenDto addTokenDto(String token, TokenDto tokenDto) {
+    public TokenDTO addTokenDto(String token, TokenDTO tokenDto) {
         if (Objects.isNull(tokenDto)) {
             return null;
         }
@@ -64,7 +64,7 @@ public class TokenDb {
      * @param token 生成的token
      * @return 返回已移除的token的token信息
      */
-    public TokenDto removeTokenDto(String token) {
+    public TokenDTO removeTokenDto(String token) {
         if (Objects.isNull(token)) {
             return null;
         }

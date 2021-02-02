@@ -1,8 +1,8 @@
 package com.sorcery.api.service;
 
-import com.sorcery.api.dto.ResultDto;
-import com.sorcery.api.dto.cases.TaskCaseRelDetailDto;
-import com.sorcery.api.dto.cases.TaskCaseRelListDto;
+import com.sorcery.api.dto.ResultDTO;
+import com.sorcery.api.dto.cases.TaskCaseRelDetailDTO;
+import com.sorcery.api.dto.cases.TaskCaseRelListDTO;
 import com.sorcery.api.dto.page.PageTableRequest;
 import com.sorcery.api.dto.page.PageTableResponse;
 
@@ -17,6 +17,6 @@ public interface TaskCaseRelService {
      * @param pageTableRequest 分页查询
      * @return 返回接口测试任务详细信息
      */
-    ResultDto<PageTableResponse<TaskCaseRelDetailDto>> listDetail(PageTableRequest<TaskCaseRelListDto> pageTableRequest);
+    ResultDTO<PageTableResponse<TaskCaseRelDetailDTO>> listDetail(PageTableRequest<TaskCaseRelListDTO> pageTableRequest);
 
 }

@@ -1,13 +1,16 @@
 package com.sorcery.api.dto.report;
 
+import com.sorcery.api.dto.BaseDTO;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author jingLv
  * @date 2021/01/19
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class AllureReportDto {
+public class AllureReportDTO extends BaseDTO {
     /**
      * 任务id
      */

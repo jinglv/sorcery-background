@@ -9,9 +9,9 @@ import com.offbytwo.jenkins.model.QueueReference;
 import com.sorcery.api.common.exception.ServiceException;
 import com.sorcery.api.common.utils.JenkinsUtils;
 import com.sorcery.api.dao.UserMapper;
-import com.sorcery.api.dto.ResultDto;
-import com.sorcery.api.dto.TokenDto;
-import com.sorcery.api.dto.jenkins.OperateJenkinsJobDto;
+import com.sorcery.api.dto.ResultDTO;
+import com.sorcery.api.dto.TokenDTO;
+import com.sorcery.api.dto.jenkins.OperateJenkinsJobDTO;
 import com.sorcery.api.entity.Jenkins;
 import com.sorcery.api.entity.User;
 import lombok.extern.slf4j.Slf4j;
@@ -46,10 +46,10 @@ public class JenkinsClient {
      * @param operateJenkinsJobDto 操作Jenkins job信息
      * @return 返回执行结果
      */
-    public ResultDto<String> operateJenkinsJob(OperateJenkinsJobDto operateJenkinsJobDto) throws IOException {
+    public ResultDTO<String> operateJenkinsJob(OperateJenkinsJobDTO operateJenkinsJobDto) throws IOException {
         log.info("执行Jenkins的Job信息：{}", JSONUtil.toJsonStr(operateJenkinsJobDto));
         Jenkins jenkins = operateJenkinsJobDto.getJenkins();
-        TokenDto tokenDto = operateJenkinsJobDto.getTokenDto();
+        TokenDTO tokenDto = operateJenkinsJobDto.getTokenDto();
         Map<String, String> params = operateJenkinsJobDto.getParams();
 
         User queryUser = new User();
@@ -63,14 +63,14 @@ public class JenkinsClient {
         log.info("拼接Job标识：{}", jobSign);
 
         if (ObjectUtils.isEmpty(jobSign)) {
-            return ResultDto.fail("Jenkins的Job标识不符合规范");
+            return ResultDTO.fail("Jenkins的Job标识不符合规范");
         }
         FileReader fileReader = new FileReader(new File("src/main/resources/jenkins/" + jobSign + ".xml"));
         // 获取Jenkins Job的配置文件的内容
         String jobXml = fileReader.readString();
         log.info("解析Jenkins配置文件内容:{}", jobXml);
         if (ObjectUtils.isEmpty(jobXml)) {
-            return ResultDto.fail("Job配置信息不能为空");
+            return ResultDTO.fail("Job配置信息不能为空");
         }
         //获取根据job类型获取数据库中对应的job名称
         String dbJobName = resultUser.getStartTestJobName();
@@ -86,7 +86,7 @@ public class JenkinsClient {
             JenkinsHttpClient jenkinsHttpClient = jenkinsFactory.getJenkinsHttpClient(tokenDto.getUserId(), tokenDto.getDefaultJenkinsId());
             Job job = getJob(jobName, jenkinsHttpClient, jenkins.getUrl());
             build(job, params);
-            return ResultDto.success("成功");
+            return ResultDTO.success("成功");
         } catch (Exception e) {
             String tips = PREFIX_TIPS + "操作Jenkins的Job异常" + e.getMessage();
             log.error(tips, e);
@@ -111,7 +111,7 @@ public class JenkinsClient {
             } else {
                 jenkinsServer.updateJob(null, jobName, jobXml, true);
             }
-            ResultDto.success("成功");
+            ResultDTO.success("成功");
         } catch (Exception e) {
             String tips = PREFIX_TIPS + "创建或更新Jenkins的Job时异常" + e.getMessage();
             log.error(tips, e);

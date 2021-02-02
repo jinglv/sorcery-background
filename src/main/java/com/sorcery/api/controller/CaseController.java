@@ -3,11 +3,11 @@ package com.sorcery.api.controller;
 import cn.hutool.json.JSONUtil;
 import com.sorcery.api.common.token.TokenDb;
 import com.sorcery.api.constants.UserConstants;
-import com.sorcery.api.dto.ResultDto;
-import com.sorcery.api.dto.TokenDto;
-import com.sorcery.api.dto.cases.CaseDto;
-import com.sorcery.api.dto.cases.QueryCaseListDto;
-import com.sorcery.api.dto.cases.UpdateCaseDto;
+import com.sorcery.api.dto.ResultDTO;
+import com.sorcery.api.dto.TokenDTO;
+import com.sorcery.api.dto.cases.CaseDTO;
+import com.sorcery.api.dto.cases.QueryCaseListDTO;
+import com.sorcery.api.dto.cases.UpdateCaseDTO;
 import com.sorcery.api.dto.page.PageTableRequest;
 import com.sorcery.api.dto.page.PageTableResponse;
 import com.sorcery.api.entity.Cases;
@@ -51,44 +51,44 @@ public class CaseController {
      */
     @ApiOperation(value = "新增测试用例", notes = "新增测试用例")
     @PostMapping("add")
-    public ResultDto<Cases> save(HttpServletRequest request, @RequestBody CaseDto caseDto) {
+    public ResultDTO<Cases> save(HttpServletRequest request, @RequestBody CaseDTO caseDto) {
         log.info("新增测试用例,请求参数：{}", JSONUtil.parse(caseDto));
         if (Objects.isNull(caseDto)) {
-            return ResultDto.fail("请求参数不能为空");
+            return ResultDTO.fail("请求参数不能为空");
         }
         if (ObjectUtils.isEmpty(caseDto.getCaseData())) {
-            return ResultDto.fail("测试用例数据不能为空");
+            return ResultDTO.fail("测试用例数据不能为空");
         }
         if (ObjectUtils.isEmpty(caseDto.getCaseName())) {
-            return ResultDto.fail("测试用例名称不能为空");
+            return ResultDTO.fail("测试用例名称不能为空");
         }
         Cases cases = new Cases();
         cases.setCaseData(caseDto.getCaseData())
                 .setCaseName(caseDto.getCaseName())
                 .setRemark(caseDto.getRemark());
-        TokenDto tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
+        TokenDTO tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
         cases.setCreateUserId(tokenDto.getUserId());
         return caseService.save(cases);
     }
 
     @ApiOperation(value = "通过文件新增测试用例", notes = "新增测试用例")
     @PostMapping("file")
-    public ResultDto<Cases> saveFile(HttpServletRequest request, @RequestParam("caseFile") MultipartFile caseFile, CaseDto caseDto) throws IOException {
+    public ResultDTO<Cases> saveFile(HttpServletRequest request, @RequestParam("caseFile") MultipartFile caseFile, CaseDTO caseDto) throws IOException {
         log.info("通过文件新增测试用例-请求参数：{}", JSONUtil.parse(caseDto));
         if (Objects.isNull(caseDto)) {
-            return ResultDto.fail("请求参数不能为空");
+            return ResultDTO.fail("请求参数不能为空");
         }
         if (Objects.isNull(caseFile)) {
-            return ResultDto.fail("测试用例文件不能为空");
+            return ResultDTO.fail("测试用例文件不能为空");
         }
         if (ObjectUtils.isEmpty(caseDto.getCaseName())) {
-            return ResultDto.fail("测试用例名称不能为空");
+            return ResultDTO.fail("测试用例名称不能为空");
         }
         // 获取文件上传IO流
         InputStream inputStream = caseFile.getInputStream();
         String caseData = IOUtils.toString(inputStream, "UTF-8");
         inputStream.close();
-        TokenDto tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
+        TokenDTO tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
         Cases cases = new Cases();
         cases.setCreateUserId(tokenDto.getUserId());
         //BeanUtils.copyProperties(addHogwartsTestCaseDto, hogwartsTestCase);
@@ -110,15 +110,15 @@ public class CaseController {
      */
     @ApiOperation(value = "分页列表查询")
     @GetMapping("list")
-    public ResultDto<PageTableResponse<Cases>> list(HttpServletRequest request, PageTableRequest<QueryCaseListDto> pageTableRequest) {
+    public ResultDTO<PageTableResponse<Cases>> list(HttpServletRequest request, PageTableRequest<QueryCaseListDTO> pageTableRequest) {
         log.info("测试用例分页列表查询请求参数：{} ", JSONUtil.parse(pageTableRequest));
         if (Objects.isNull(pageTableRequest)) {
-            return ResultDto.success("列表查询参数不能为空");
+            return ResultDTO.success("列表查询参数不能为空");
         }
-        TokenDto tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
-        QueryCaseListDto params = pageTableRequest.getParams();
+        TokenDTO tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
+        QueryCaseListDTO params = pageTableRequest.getParams();
         if (Objects.isNull(params)) {
-            params = new QueryCaseListDto();
+            params = new QueryCaseListDTO();
         }
         params.setCreateUserId(tokenDto.getUserId());
         pageTableRequest.setParams(params);
@@ -134,18 +134,18 @@ public class CaseController {
      */
     @ApiOperation(value = "修改测试用例")
     @PutMapping
-    public ResultDto<Cases> update(HttpServletRequest request, @RequestBody UpdateCaseDto updateCaseDto) {
+    public ResultDTO<Cases> update(HttpServletRequest request, @RequestBody UpdateCaseDTO updateCaseDto) {
         log.info("修改测试用例,请求参数：{}", JSONUtil.parse(updateCaseDto));
         if (Objects.isNull(updateCaseDto)) {
-            return ResultDto.fail("测试用例信息不能为空");
+            return ResultDTO.fail("测试用例信息不能为空");
         }
         Integer caseId = updateCaseDto.getId();
         String caseName = updateCaseDto.getCaseName();
         if (Objects.isNull(caseId)) {
-            return ResultDto.fail("测试用例id不能为空");
+            return ResultDTO.fail("测试用例id不能为空");
         }
         if (ObjectUtils.isEmpty(caseName)) {
-            return ResultDto.fail("测试用例名称不能为空");
+            return ResultDTO.fail("测试用例名称不能为空");
         }
         Cases cases = new Cases();
         //BeanUtils.copyProperties(addHogwartsTestCaseDto, hogwartsTestCase);
@@ -154,7 +154,7 @@ public class CaseController {
                 .setCaseData(updateCaseDto.getCaseData())
                 .setCaseName(updateCaseDto.getCaseName())
                 .setRemark(updateCaseDto.getRemark());
-        TokenDto tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
+        TokenDTO tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
         cases.setCreateUserId(tokenDto.getUserId());
         return caseService.update(cases);
     }
@@ -168,12 +168,12 @@ public class CaseController {
      */
     @ApiOperation(value = "根据测试用例id查询")
     @GetMapping("{caseId}")
-    public ResultDto<Cases> getById(HttpServletRequest request, @PathVariable Integer caseId) {
+    public ResultDTO<Cases> getById(HttpServletRequest request, @PathVariable Integer caseId) {
         log.info("根据测试用例id查询测试用例，测试用例id:{}", caseId);
         if (Objects.isNull(caseId)) {
-            return ResultDto.fail("caseId不能为空");
+            return ResultDTO.fail("caseId不能为空");
         }
-        TokenDto tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
+        TokenDTO tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
         return caseService.getById(caseId, tokenDto.getUserId());
     }
 
@@ -185,12 +185,12 @@ public class CaseController {
      */
     @ApiOperation(value = "通过caseId删除测试用例")
     @DeleteMapping("{caseId}")
-    public ResultDto<Cases> delete(HttpServletRequest request, @PathVariable Integer caseId) {
+    public ResultDTO<Cases> delete(HttpServletRequest request, @PathVariable Integer caseId) {
         log.info("根据测试用例id删除测试-请求参数:{}", caseId);
         if (Objects.isNull(caseId)) {
-            return ResultDto.fail("caseId不能为空");
+            return ResultDTO.fail("caseId不能为空");
         }
-        TokenDto tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
+        TokenDTO tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
         return caseService.delete(caseId, tokenDto.getUserId());
     }
 
@@ -203,10 +203,10 @@ public class CaseController {
      */
     @ApiOperation(value = "根据测试用例id查询测试用例原始数据")
     @GetMapping("data/{caseId}")
-    public ResultDto<String> getCaseDataById(HttpServletRequest request, @PathVariable Integer caseId) {
+    public ResultDTO<String> getCaseDataById(HttpServletRequest request, @PathVariable Integer caseId) {
         log.info("根据用户id和caseId查询case原始数据-请求测试用例id:{}", caseId);
-        TokenDto tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
-        ResultDto<String> caseData = caseService.getCaseDataById(tokenDto.getUserId(), caseId);
+        TokenDTO tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
+        ResultDTO<String> caseData = caseService.getCaseDataById(tokenDto.getUserId(), caseId);
         log.info("根据用户id和caseId查询case原始数据-查询到的数据：{}", caseData);
         return caseData;
     }

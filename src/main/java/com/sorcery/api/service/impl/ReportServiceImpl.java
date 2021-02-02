@@ -4,11 +4,11 @@ import com.sorcery.api.common.utils.ReportUtils;
 import com.sorcery.api.constants.Constants;
 import com.sorcery.api.dao.JenkinsMapper;
 import com.sorcery.api.dao.TaskMapper;
-import com.sorcery.api.dto.ResultDto;
-import com.sorcery.api.dto.TokenDto;
-import com.sorcery.api.dto.report.AllureReportDto;
-import com.sorcery.api.dto.report.TaskDataDto;
-import com.sorcery.api.dto.report.TaskReportDto;
+import com.sorcery.api.dto.ResultDTO;
+import com.sorcery.api.dto.TokenDTO;
+import com.sorcery.api.dto.report.AllureReportDTO;
+import com.sorcery.api.dto.report.TaskDataDTO;
+import com.sorcery.api.dto.report.TaskReportDTO;
 import com.sorcery.api.entity.Jenkins;
 import com.sorcery.api.entity.Task;
 import com.sorcery.api.service.ReportService;
@@ -43,22 +43,22 @@ public class ReportServiceImpl implements ReportService {
      * @return 返回接口allure测试报告
      */
     @Override
-    public ResultDto<AllureReportDto> getAllureReport(TokenDto tokenDto, Integer taskId) {
+    public ResultDTO<AllureReportDTO> getAllureReport(TokenDTO tokenDto, Integer taskId) {
         Task queryTask = new Task();
         queryTask.setId(taskId);
         queryTask.setCreateUserId(tokenDto.getUserId());
 
         Task resultTask = taskMapper.selectOne(queryTask);
         if (Objects.isNull(resultTask)) {
-            return ResultDto.fail("测试任务不存在 " + taskId);
+            return ResultDTO.fail("测试任务不存在 " + taskId);
         }
         String buildUrl = resultTask.getBuildUrl();
         if (ObjectUtils.isEmpty(buildUrl)) {
-            return ResultDto.fail("测试任务的构建地址不存在 " + taskId);
+            return ResultDTO.fail("测试任务的构建地址不存在 " + taskId);
         }
         Integer testJenkinsId = resultTask.getTestJenkinsId();
         if (Objects.isNull(testJenkinsId)) {
-            return ResultDto.fail("测试任务的jenkinsId不存在 " + taskId);
+            return ResultDTO.fail("测试任务的jenkinsId不存在 " + taskId);
         }
         Jenkins queryJenkins = new Jenkins();
         queryJenkins.setId(testJenkinsId);
@@ -66,10 +66,10 @@ public class ReportServiceImpl implements ReportService {
         Jenkins resultJenkins = jenkinsMapper.selectOne(queryJenkins);
         String allureReportUrl = ReportUtils.getAllureReportUrl(buildUrl, resultJenkins, true);
 
-        AllureReportDto allureReportDto = new AllureReportDto();
+        AllureReportDTO allureReportDto = new AllureReportDTO();
         allureReportDto.setTaskId(taskId);
         allureReportDto.setAllureReportUrl(allureReportUrl);
-        return ResultDto.success("成功", allureReportDto);
+        return ResultDTO.success("成功", allureReportDto);
     }
 
     /**
@@ -79,15 +79,15 @@ public class ReportServiceImpl implements ReportService {
      * @return 接口返回报告查询结果
      */
     @Override
-    public ResultDto<TaskReportDto> getTaskByType(TokenDto tokenDto) {
-        TaskReportDto taskReportDto = new TaskReportDto();
+    public ResultDTO<TaskReportDTO> getTaskByType(TokenDTO tokenDto) {
+        TaskReportDTO taskReportDto = new TaskReportDTO();
         int taskSum = 0;
-        List<TaskDataDto> taskDataDtoList = taskMapper.getTaskByType(tokenDto.getUserId());
-        if (Objects.isNull(taskDataDtoList) || taskDataDtoList.size() == 0) {
-            ResultDto.fail("无任务数据");
+        List<TaskDataDTO> taskDataDTOList = taskMapper.getTaskByType(tokenDto.getUserId());
+        if (Objects.isNull(taskDataDTOList) || taskDataDTOList.size() == 0) {
+            ResultDTO.fail("无任务数据");
         }
-        List<TaskDataDto> newtTaskDataDtoList = new ArrayList<>();
-        for (TaskDataDto taskDataDto : taskDataDtoList) {
+        List<TaskDataDTO> newtTaskDataDTOList = new ArrayList<>();
+        for (TaskDataDTO taskDataDto : taskDataDTOList) {
             Integer taskKey = taskDataDto.getTaskKey();
             if (Objects.isNull(taskKey)) {
                 taskKey = 0;
@@ -102,12 +102,12 @@ public class ReportServiceImpl implements ReportService {
                 taskDataDto.setDescription("一键执行测试的任务");
             }
             taskSum = taskSum + taskDataDto.getTaskCount();
-            newtTaskDataDtoList.add(taskDataDto);
+            newtTaskDataDTOList.add(taskDataDto);
         }
         taskReportDto.setTaskSum(taskSum);
-        taskReportDto.setTaskDataDtoList(newtTaskDataDtoList);
+        taskReportDto.setTaskDataDTOList(newtTaskDataDTOList);
 
-        return ResultDto.success("成功", taskReportDto);
+        return ResultDTO.success("成功", taskReportDto);
     }
 
     /**
@@ -117,15 +117,15 @@ public class ReportServiceImpl implements ReportService {
      * @return 接口返回报告查询结果
      */
     @Override
-    public ResultDto<TaskReportDto> getTaskByStatus(TokenDto tokenDto) {
-        TaskReportDto taskReportDto = new TaskReportDto();
+    public ResultDTO<TaskReportDTO> getTaskByStatus(TokenDTO tokenDto) {
+        TaskReportDTO taskReportDto = new TaskReportDTO();
         int taskSum = 0;
-        List<TaskDataDto> taskDataDtoList = taskMapper.getTaskByStatus(tokenDto.getUserId());
-        if (Objects.isNull(taskDataDtoList) || taskDataDtoList.size() == 0) {
-            ResultDto.fail("无任务数据");
+        List<TaskDataDTO> taskDataDTOList = taskMapper.getTaskByStatus(tokenDto.getUserId());
+        if (Objects.isNull(taskDataDTOList) || taskDataDTOList.size() == 0) {
+            ResultDTO.fail("无任务数据");
         }
-        List<TaskDataDto> newtTaskDataDtoList = new ArrayList<>();
-        for (TaskDataDto taskDataDto : taskDataDtoList) {
+        List<TaskDataDTO> newtTaskDataDTOList = new ArrayList<>();
+        for (TaskDataDTO taskDataDto : taskDataDTOList) {
             Integer taskKey = taskDataDto.getTaskKey();
             if (Objects.isNull(taskKey)) {
                 taskKey = 0;
@@ -143,11 +143,11 @@ public class ReportServiceImpl implements ReportService {
                 taskDataDto.setDescription("已完成");
             }
             taskSum = taskSum + taskDataDto.getTaskCount();
-            newtTaskDataDtoList.add(taskDataDto);
+            newtTaskDataDTOList.add(taskDataDto);
         }
         taskReportDto.setTaskSum(taskSum);
-        taskReportDto.setTaskDataDtoList(newtTaskDataDtoList);
-        return ResultDto.success("成功", taskReportDto);
+        taskReportDto.setTaskDataDTOList(newtTaskDataDTOList);
+        return ResultDTO.success("成功", taskReportDto);
     }
 
     /**
@@ -159,11 +159,11 @@ public class ReportServiceImpl implements ReportService {
      * @return 接口返回报告查询结果
      */
     @Override
-    public ResultDto<List<Task>> getTaskByCaseCount(TokenDto tokenDto, Integer start, Integer end) {
+    public ResultDTO<List<Task>> getTaskByCaseCount(TokenDTO tokenDto, Integer start, Integer end) {
         List<Task> taskList = taskMapper.getCaseCountByTask(tokenDto.getUserId(), start, end);
         if (Objects.isNull(taskList) || taskList.size() == 0) {
-            return ResultDto.fail("无任务数据");
+            return ResultDTO.fail("无任务数据");
         }
-        return ResultDto.success("成功", taskList);
+        return ResultDTO.success("成功", taskList);
     }
 }

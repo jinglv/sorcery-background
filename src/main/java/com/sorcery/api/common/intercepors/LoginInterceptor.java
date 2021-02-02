@@ -3,7 +3,7 @@ package com.sorcery.api.common.intercepors;
 import com.sorcery.api.common.exception.ServiceException;
 import com.sorcery.api.common.token.TokenDb;
 import com.sorcery.api.constants.UserConstants;
-import com.sorcery.api.dto.TokenDto;
+import com.sorcery.api.dto.TokenDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -54,8 +54,6 @@ public class LoginInterceptor implements HandlerInterceptor {
                 || "/csrf".equals(requestUri)
                 // 过滤http://ip:port/v2/api-docs
                 || "/favicon.ico".equals(requestUri)
-                // 演示map local 不用校验是否登录
-                || "/report/showMapLocal".equals(requestUri)
                 || "/".equals(requestUri);
         if (swaggerFlag) {
             return true;
@@ -64,11 +62,11 @@ public class LoginInterceptor implements HandlerInterceptor {
         // 判断请求是否包含token
         if (ObjectUtils.isEmpty(tokenStr)) {
             response.setStatus(401);
-            ServiceException.throwEx("客户端未传token " + requestUri);
+            ServiceException.throwEx("客户端未传token, Request Path" + requestUri);
         }
 
         // 获取token
-        TokenDto tokenDto = tokenDb.getTokenDto(tokenStr);
+        TokenDTO tokenDto = tokenDb.getTokenDto(tokenStr);
         // 如果token为空（用户未登录）
         if (Objects.isNull(tokenDto)) {
             //这个方法返回false表示忽略当前请求，如果一个用户调用了需要登陆才能使用的接口，如果他没有登陆这里会直接忽略掉

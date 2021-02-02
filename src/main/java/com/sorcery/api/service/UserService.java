@@ -1,7 +1,7 @@
 package com.sorcery.api.service;
 
-import com.sorcery.api.common.token.Token;
-import com.sorcery.api.dto.ResultDto;
+import com.sorcery.api.dto.ResultDTO;
+import com.sorcery.api.dto.TokenDTO;
 import com.sorcery.api.entity.User;
 
 /**
@@ -17,7 +17,7 @@ public interface UserService {
      * @param id user id主键
      * @return 返回接口用户查询结果
      */
-    ResultDto<User> getById(Integer id);
+    ResultDTO<User> getById(Integer id);
 
     /**
      * 保存用户信息（用户注册）
@@ -25,7 +25,7 @@ public interface UserService {
      * @param user 用户信息
      * @return 返回接口用户保存结果
      */
-    ResultDto<User> save(User user);
+    ResultDTO<User> save(User user);
 
     /**
      * 用户登录
@@ -34,5 +34,5 @@ public interface UserService {
      * @param password 用户密码
      * @return 返回接口用户登录结果
      */
-    ResultDto<Token> login(String username, String password);
+    ResultDTO<TokenDTO> login(String username, String password);
 }

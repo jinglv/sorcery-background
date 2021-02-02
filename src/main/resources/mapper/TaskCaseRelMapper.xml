@@ -12,7 +12,7 @@
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
-    <select id="listDetail" resultType="com.sorcery.api.dto.cases.TaskCaseRelDetailDto">
+    <select id="listDetail" resultType="com.sorcery.api.dto.cases.TaskCaseRelDetailDTO">
         SELECT tt.`id`,
         tt.`task_id` AS taskId,
         tt.`case_id` AS caseId,

@@ -10,15 +10,15 @@ import com.sorcery.api.dao.CaseMapper;
 import com.sorcery.api.dao.JenkinsMapper;
 import com.sorcery.api.dao.TaskCaseRelMapper;
 import com.sorcery.api.dao.TaskMapper;
-import com.sorcery.api.dto.RequestInfoDto;
-import com.sorcery.api.dto.ResultDto;
-import com.sorcery.api.dto.TokenDto;
-import com.sorcery.api.dto.jenkins.OperateJenkinsJobDto;
+import com.sorcery.api.dto.RequestInfoDTO;
+import com.sorcery.api.dto.ResultDTO;
+import com.sorcery.api.dto.TokenDTO;
+import com.sorcery.api.dto.jenkins.OperateJenkinsJobDTO;
 import com.sorcery.api.dto.page.PageTableRequest;
 import com.sorcery.api.dto.page.PageTableResponse;
-import com.sorcery.api.dto.task.AddTaskDto;
-import com.sorcery.api.dto.task.QueryTaskListDto;
-import com.sorcery.api.dto.task.TaskDto;
+import com.sorcery.api.dto.task.AddTaskDTO;
+import com.sorcery.api.dto.task.QueryTaskListDTO;
+import com.sorcery.api.dto.task.TaskDTO;
 import com.sorcery.api.entity.Cases;
 import com.sorcery.api.entity.Jenkins;
 import com.sorcery.api.entity.Task;
@@ -63,9 +63,9 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResultDto<Task> save(TaskDto taskDto, Integer taskType) {
+    public ResultDTO<Task> save(TaskDTO taskDto, Integer taskType) {
         StringBuilder testCommand = new StringBuilder();
-        AddTaskDto testTask = taskDto.getTestTask();
+        AddTaskDTO testTask = taskDto.getTestTask();
         List<Integer> caseIdList = taskDto.getCaseIdList();
 
         log.info("新增任务数据：{}", testTask);
@@ -74,7 +74,7 @@ public class TaskServiceImpl implements TaskService {
         queryJenkins.setCreateUserId(testTask.getCreateUserId());
         Jenkins result = jenkinsMapper.selectOne(queryJenkins);
         if (Objects.isNull(result)) {
-            return ResultDto.fail("Jenkins信息为空");
+            return ResultDTO.fail("Jenkins信息为空");
         }
         List<Cases> casesList = caseMapper.selectByIds(StrUtils.list2IdsStr(caseIdList));
 
@@ -108,7 +108,7 @@ public class TaskServiceImpl implements TaskService {
             log.info("测试任务详情保存，存入数据库参数：{}", JSONUtil.toJsonStr(testTaskCaseList));
             taskCaseRelMapper.insertList(testTaskCaseList);
         }
-        return ResultDto.success("成功", task);
+        return ResultDTO.success("成功", task);
     }
 
     /**
@@ -119,7 +119,7 @@ public class TaskServiceImpl implements TaskService {
      * @return 返回接口task删除结果
      */
     @Override
-    public ResultDto<Task> delete(Integer taskId, Integer createUserId) {
+    public ResultDTO<Task> delete(Integer taskId, Integer createUserId) {
         Task queryTask = new Task();
         queryTask.setId(taskId);
         queryTask.setCreateUserId(createUserId);
@@ -127,10 +127,10 @@ public class TaskServiceImpl implements TaskService {
         Task result = taskMapper.selectOne(queryTask);
         // 如果为空，则提示，也可以直接返回成功
         if (Objects.isNull(result)) {
-            return ResultDto.fail("未查到测试任务信息");
+            return ResultDTO.fail("未查到测试任务信息");
         }
         taskMapper.deleteByPrimaryKey(taskId);
-        return ResultDto.success("成功");
+        return ResultDTO.success("成功");
     }
 
     /**
@@ -140,7 +140,7 @@ public class TaskServiceImpl implements TaskService {
      * @return 返回接口task更新结果
      */
     @Override
-    public ResultDto<Task> update(Task task) {
+    public ResultDTO<Task> update(Task task) {
         Task queryTask = new Task();
         queryTask.setId(task.getId());
         queryTask.setCreateUserId(task.getCreateUserId());
@@ -148,14 +148,14 @@ public class TaskServiceImpl implements TaskService {
         Task result = taskMapper.selectOne(queryTask);
         //如果为空，则提示，也可以直接返回成功
         if (Objects.isNull(result)) {
-            return ResultDto.fail("未查到测试任务信息");
+            return ResultDTO.fail("未查到测试任务信息");
         }
         result.setUpdateTime(new Date());
         result.setName(task.getName());
         result.setRemark(task.getRemark());
 
         taskMapper.updateByPrimaryKeySelective(result);
-        return ResultDto.success("成功");
+        return ResultDTO.success("成功");
     }
 
     /**
@@ -166,7 +166,7 @@ public class TaskServiceImpl implements TaskService {
      * @return 返回接口task查询结果
      */
     @Override
-    public ResultDto<Task> getById(Integer taskId, Integer createUserId) {
+    public ResultDTO<Task> getById(Integer taskId, Integer createUserId) {
         Task queryTask = new Task();
         queryTask.setId(taskId);
         queryTask.setCreateUserId(createUserId);
@@ -174,9 +174,9 @@ public class TaskServiceImpl implements TaskService {
         Task result = taskMapper.selectOne(queryTask);
         //如果为空，则提示，也可以直接返回成功
         if (Objects.isNull(result)) {
-            ResultDto.fail("未查到测试任务信息");
+            ResultDTO.fail("未查到测试任务信息");
         }
-        return ResultDto.success("成功", result);
+        return ResultDTO.success("成功", result);
     }
 
     /**
@@ -186,8 +186,8 @@ public class TaskServiceImpl implements TaskService {
      * @return 返回接口task分页查询结果
      */
     @Override
-    public ResultDto<PageTableResponse<Task>> list(PageTableRequest<QueryTaskListDto> pageTableRequest) {
-        QueryTaskListDto params = pageTableRequest.getParams();
+    public ResultDTO<PageTableResponse<Task>> list(PageTableRequest<QueryTaskListDTO> pageTableRequest) {
+        QueryTaskListDTO params = pageTableRequest.getParams();
         Integer pageNum = pageTableRequest.getPageNum();
         Integer pageSize = pageTableRequest.getPageSize();
         //总数
@@ -197,7 +197,7 @@ public class TaskServiceImpl implements TaskService {
         PageTableResponse<Task> hogwartsTestJenkinsPageTableResponse = new PageTableResponse<>();
         hogwartsTestJenkinsPageTableResponse.setRecordsTotal(recordsTotal);
         hogwartsTestJenkinsPageTableResponse.setData(hogwartsTestJenkinsList);
-        return ResultDto.success("成功", hogwartsTestJenkinsPageTableResponse);
+        return ResultDTO.success("成功", hogwartsTestJenkinsPageTableResponse);
     }
 
     /**
@@ -211,21 +211,21 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResultDto<String> startTask(TokenDto tokenDto, RequestInfoDto requestInfoDto, Task task) throws IOException {
+    public ResultDTO<String> startTask(TokenDTO tokenDto, RequestInfoDTO requestInfoDto, Task task) throws IOException {
         log.info("测试任务执行, 请求参数：{}, 测试任务请求参数：{}", JSONUtil.toJsonStr(requestInfoDto), JSONUtil.toJsonStr(task));
         if (Objects.isNull(task)) {
-            return ResultDto.fail("测试任务参数不能为空");
+            return ResultDTO.fail("测试任务参数不能为空");
         }
         Integer defaultJenkinsId = tokenDto.getDefaultJenkinsId();
         if (Objects.isNull(defaultJenkinsId)) {
-            return ResultDto.fail("未配置默认Jenkins");
+            return ResultDTO.fail("未配置默认Jenkins");
         }
         Jenkins queryJenkins = new Jenkins();
         queryJenkins.setId(defaultJenkinsId);
         queryJenkins.setCreateUserId(tokenDto.getUserId());
         Jenkins resultJenkins = jenkinsMapper.selectOne(queryJenkins);
         if (Objects.isNull(resultJenkins)) {
-            return ResultDto.fail("默认Jenkins不存在或已失效");
+            return ResultDTO.fail("默认Jenkins不存在或已失效");
         }
         Task queryTask = new Task();
         queryTask.setId(task.getId());
@@ -234,7 +234,7 @@ public class TaskServiceImpl implements TaskService {
         if (Objects.isNull(resultTask)) {
             String tips = "未查到测试任务";
             log.error(tips, resultTask.getId());
-            return ResultDto.fail(tips);
+            return ResultDTO.fail(tips);
         }
         // 获取执行Jenkins执行测试命令
         String testCommandStr = task.getTestCommand();
@@ -242,7 +242,7 @@ public class TaskServiceImpl implements TaskService {
             testCommandStr = resultTask.getTestCommand();
         }
         if (ObjectUtils.isEmpty(testCommandStr)) {
-            return ResultDto.fail("任务的测试命令不能为空");
+            return ResultDTO.fail("任务的测试命令不能为空");
         }
         //更新任务状态
         resultTask.setStatus(Constants.STATUS_TWO);
@@ -262,13 +262,13 @@ public class TaskServiceImpl implements TaskService {
         log.info("执行测试Job的构建参数组装：{}", JSONUtil.toJsonStr(params));
         log.info("执行测试Job的修改任务状态的数据组装：{}", updateStatusUrl);
 
-        OperateJenkinsJobDto operateJenkinsJobDto = new OperateJenkinsJobDto();
+        OperateJenkinsJobDTO operateJenkinsJobDto = new OperateJenkinsJobDTO();
         operateJenkinsJobDto.setParams(params);
         operateJenkinsJobDto.setTokenDto(tokenDto);
         operateJenkinsJobDto.setJenkins(resultJenkins);
         operateJenkinsJobDto.setParams(params);
 
-        ResultDto<String> resultDto = jenkinsClient.operateJenkinsJob(operateJenkinsJobDto);
+        ResultDTO<String> resultDto = jenkinsClient.operateJenkinsJob(operateJenkinsJobDto);
         //此处抛出异常，阻止事务提交
         if (0 == resultDto.getResultCode()) {
             throw new ServiceException("执行测试时异常-" + resultDto.getMessage());
@@ -283,18 +283,18 @@ public class TaskServiceImpl implements TaskService {
      * @return 返回接口task修改状态结果
      */
     @Override
-    public ResultDto<Task> updateStatus(Task task) {
+    public ResultDTO<Task> updateStatus(Task task) {
         Task queryTask = new Task();
         queryTask.setId(task.getId());
         queryTask.setCreateUserId(task.getCreateUserId());
         Task result = taskMapper.selectOne(queryTask);
         //如果为空，则提示
         if (Objects.isNull(result)) {
-            return ResultDto.fail("未查到测试任务信息");
+            return ResultDTO.fail("未查到测试任务信息");
         }
         //如果任务已经完成，则不重复修改
         if (Constants.STATUS_THREE.equals(result.getStatus())) {
-            return ResultDto.fail("测试任务已完成，无需修改");
+            return ResultDTO.fail("测试任务已完成，无需修改");
         }
         result.setUpdateTime(new Date());
         //仅状态为已完成时修改
@@ -303,7 +303,7 @@ public class TaskServiceImpl implements TaskService {
             result.setStatus(Constants.STATUS_THREE);
             taskMapper.updateByPrimaryKey(result);
         }
-        return ResultDto.success("成功");
+        return ResultDTO.success("成功");
     }
 
     /**

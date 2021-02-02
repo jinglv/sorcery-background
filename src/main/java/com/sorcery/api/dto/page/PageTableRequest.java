@@ -1,6 +1,6 @@
 package com.sorcery.api.dto.page;
 
-import com.sorcery.api.dto.BaseDto;
+import com.sorcery.api.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,7 +15,7 @@ import java.io.Serializable;
  */
 @ApiModel(value = "列表查询的分页参数", description = "请求参数类")
 @Data
-public class PageTableRequest<Dto extends BaseDto> implements Serializable {
+public class PageTableRequest<Dto extends BaseDTO> implements Serializable {
 
     private static final long serialVersionUID = -8088252233450804552L;
     /**

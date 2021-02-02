@@ -1,7 +1,7 @@
 package com.sorcery.api.dao;
 
 import com.sorcery.api.common.MySqlExtensionMapper;
-import com.sorcery.api.dto.jenkins.QueryJenkinsListDto;
+import com.sorcery.api.dto.jenkins.QueryJenkinsListDTO;
 import com.sorcery.api.entity.Jenkins;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -21,7 +21,7 @@ public interface JenkinsMapper extends MySqlExtensionMapper<Jenkins> {
      * @param params
      * @return
      */
-    Integer count(@Param("params") QueryJenkinsListDto params);
+    Integer count(@Param("params") QueryJenkinsListDTO params);
 
     /**
      * 列表分页查询
@@ -31,6 +31,6 @@ public interface JenkinsMapper extends MySqlExtensionMapper<Jenkins> {
      * @param pageSize
      * @return
      */
-    List<Jenkins> list(@Param("params") QueryJenkinsListDto params,
+    List<Jenkins> list(@Param("params") QueryJenkinsListDTO params,
                        @Param("pageNum") Integer pageNum, @Param("pageSize") Integer pageSize);
 }

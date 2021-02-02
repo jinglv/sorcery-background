@@ -2,7 +2,7 @@ package com.sorcery.api.common.utils;
 
 import cn.hutool.json.JSONObject;
 import com.sorcery.api.constants.Constants;
-import com.sorcery.api.dto.RequestInfoDto;
+import com.sorcery.api.dto.RequestInfoDTO;
 import com.sorcery.api.entity.Task;
 import org.springframework.util.ObjectUtils;
 
@@ -37,7 +37,7 @@ public class JenkinsUtils {
         return jobName.substring(0, jobName.lastIndexOf("_"));
     }
 
-    public static StringBuilder getUpdateTaskStatusUrl(RequestInfoDto requestInfoDto, Task task) {
+    public static StringBuilder getUpdateTaskStatusUrl(RequestInfoDTO requestInfoDto, Task task) {
         StringBuilder updateStatusUrl = new StringBuilder();
         updateStatusUrl.append("curl -X PUT ");
         updateStatusUrl.append("\"").append(requestInfoDto.getBaseUrl()).append("/task/status \" ");

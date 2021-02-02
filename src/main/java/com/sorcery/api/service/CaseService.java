@@ -1,7 +1,7 @@
 package com.sorcery.api.service;
 
-import com.sorcery.api.dto.ResultDto;
-import com.sorcery.api.dto.cases.QueryCaseListDto;
+import com.sorcery.api.dto.ResultDTO;
+import com.sorcery.api.dto.cases.QueryCaseListDTO;
 import com.sorcery.api.dto.page.PageTableRequest;
 import com.sorcery.api.dto.page.PageTableResponse;
 import com.sorcery.api.entity.Cases;
@@ -19,7 +19,7 @@ public interface CaseService {
      * @param cases 测试用例信息
      * @return 返回接口测试用例保存结果
      */
-    ResultDto<Cases> save(Cases cases);
+    ResultDTO<Cases> save(Cases cases);
 
     /**
      * 删除测试用例信息
@@ -28,7 +28,7 @@ public interface CaseService {
      * @param createUserId 创建人用户id
      * @return 返回接口测试用例删除结果
      */
-    ResultDto<Cases> delete(Integer caseId, Integer createUserId);
+    ResultDTO<Cases> delete(Integer caseId, Integer createUserId);
 
     /**
      * 修改测试用例信息
@@ -36,7 +36,7 @@ public interface CaseService {
      * @param cases 测试用例更新信息
      * @return 返回接口测试用例更新结果
      */
-    ResultDto<Cases> update(Cases cases);
+    ResultDTO<Cases> update(Cases cases);
 
     /**
      * 根据id查询测试用例
@@ -45,7 +45,7 @@ public interface CaseService {
      * @param createUserId 创建人用户id
      * @return 返回接口测试用例查询结果
      */
-    ResultDto<Cases> getById(Integer caseId, Integer createUserId);
+    ResultDTO<Cases> getById(Integer caseId, Integer createUserId);
 
     /**
      * 查询测试用例信息列表
@@ -53,7 +53,7 @@ public interface CaseService {
      * @param pageTableRequest 分页查询
      * @return 返回接口测试用例分页查询结果
      */
-    ResultDto<PageTableResponse<Cases>> list(PageTableRequest<QueryCaseListDto> pageTableRequest);
+    ResultDTO<PageTableResponse<Cases>> list(PageTableRequest<QueryCaseListDTO> pageTableRequest);
 
     /**
      * 根据用户id和caseId查询case原始数据-直接返回字符串，因为会保存为文件
@@ -62,5 +62,5 @@ public interface CaseService {
      * @param caseId       测试用例主键id
      * @return 返回接口测试用例分页结果
      */
-    ResultDto<String> getCaseDataById(Integer createUserId, Integer caseId);
+    ResultDTO<String> getCaseDataById(Integer createUserId, Integer caseId);
 }

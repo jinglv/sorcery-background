@@ -1,6 +1,6 @@
-package com.sorcery.api.dto.jenkins;
+package com.sorcery.api.dto.task;
 
-import com.sorcery.api.dto.BaseDto;
+import com.sorcery.api.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,10 +11,9 @@ import lombok.EqualsAndHashCode;
  * @date 2021/01/19
  */
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "查询Jenkins信息列表对象")
+@ApiModel(value = "查询任务信息列表对象")
 @Data
-public class QueryJenkinsListDto extends BaseDto {
-
+public class QueryTaskListDTO extends BaseDTO {
     @ApiModelProperty(value = "Jenkins名称")
     private String name;
 

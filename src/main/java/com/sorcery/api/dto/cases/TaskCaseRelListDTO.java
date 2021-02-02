@@ -1,6 +1,6 @@
 package com.sorcery.api.dto.cases;
 
-import com.sorcery.api.dto.BaseDto;
+import com.sorcery.api.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "查询任务关联的测试用例详情列表对象")
 @Data
-public class TaskCaseRelListDto extends BaseDto {
+public class TaskCaseRelListDTO extends BaseDTO {
     @ApiModelProperty(value = "用例标识")
     private String caseSign;
 

@@ -3,11 +3,11 @@ package com.sorcery.api.controller;
 import cn.hutool.json.JSONUtil;
 import com.sorcery.api.common.token.TokenDb;
 import com.sorcery.api.constants.UserConstants;
-import com.sorcery.api.dto.ResultDto;
-import com.sorcery.api.dto.TokenDto;
-import com.sorcery.api.dto.jenkins.JenkinsDto;
-import com.sorcery.api.dto.jenkins.QueryJenkinsListDto;
-import com.sorcery.api.dto.jenkins.UpdateJenkinsDto;
+import com.sorcery.api.dto.ResultDTO;
+import com.sorcery.api.dto.TokenDTO;
+import com.sorcery.api.dto.jenkins.JenkinsDTO;
+import com.sorcery.api.dto.jenkins.QueryJenkinsListDTO;
+import com.sorcery.api.dto.jenkins.UpdateJenkinsDTO;
 import com.sorcery.api.dto.page.PageTableRequest;
 import com.sorcery.api.dto.page.PageTableResponse;
 import com.sorcery.api.entity.Jenkins;
@@ -26,7 +26,7 @@ import java.util.Objects;
  * @date 2021/01/19
  */
 @Slf4j
-@Api(tags = "Jenkins管理")
+@Api(tags = "测试Jenkins管理")
 @RestController
 @RequestMapping("/jenkins")
 public class JenkinsController {
@@ -48,14 +48,14 @@ public class JenkinsController {
      */
     @ApiOperation(value = "添加Jenkins")
     @PostMapping
-    public ResultDto<Jenkins> save(HttpServletRequest request, @RequestBody JenkinsDto jenkinsDto) {
+    public ResultDTO<Jenkins> save(HttpServletRequest request, @RequestBody JenkinsDTO jenkinsDto) {
         log.info("添加Jenkins信息，请求参数：{}", JSONUtil.parse(jenkinsDto));
         if (Objects.isNull(jenkinsDto)) {
-            return ResultDto.success("Jenkins信息不能为空");
+            return ResultDTO.success("Jenkins信息不能为空");
         }
         String name = jenkinsDto.getName();
         if (ObjectUtils.isEmpty(name)) {
-            return ResultDto.success("Jenkins名称不能为空");
+            return ResultDTO.success("Jenkins名称不能为空");
         }
         Jenkins jenkins = new Jenkins();
         // CopyUtil.copyPropertiesCglib(addHogwartsTestJenkinsDto, hogwartsTestJenkins);
@@ -68,7 +68,7 @@ public class JenkinsController {
                 .setDefaultJenkinsFlag(jenkinsDto.getDefaultJenkinsFlag())
                 .setCommandRunCaseType(jenkinsDto.getCommandRunCaseType())
                 .setCommandRunCaseSuffix(jenkinsDto.getCommandRunCaseSuffix());
-        TokenDto tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
+        TokenDTO tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
         jenkins.setCreateUserId(tokenDto.getUserId());
         String commandRunCaseSuffix = jenkinsDto.getCommandRunCaseSuffix();
         //过滤带.的后缀，如.yml改为yml
@@ -87,18 +87,18 @@ public class JenkinsController {
      */
     @ApiOperation(value = "修改Jenkins")
     @PutMapping
-    public ResultDto<Jenkins> update(HttpServletRequest request, @RequestBody UpdateJenkinsDto updateJenkinsDto) {
+    public ResultDTO<Jenkins> update(HttpServletRequest request, @RequestBody UpdateJenkinsDTO updateJenkinsDto) {
         log.info("修改Jenkins信息，请求参数：{}", JSONUtil.parse(updateJenkinsDto));
         if (Objects.isNull(updateJenkinsDto)) {
-            return ResultDto.success("Jenkins信息不能为空");
+            return ResultDTO.success("Jenkins信息不能为空");
         }
         Integer jenkinsId = updateJenkinsDto.getId();
         String name = updateJenkinsDto.getName();
         if (Objects.isNull(jenkinsId)) {
-            return ResultDto.fail("JenkinsId不能为空");
+            return ResultDTO.fail("JenkinsId不能为空");
         }
         if (ObjectUtils.isEmpty(name)) {
-            return ResultDto.fail("Jenkins名称不能为空");
+            return ResultDTO.fail("Jenkins名称不能为空");
         }
         Jenkins jenkins = new Jenkins();
         // CopyUtil.copyPropertiesCglib(updateHogwartsTestJenkinsDto, hogwartsTestJenkins);
@@ -112,7 +112,7 @@ public class JenkinsController {
                 .setDefaultJenkinsFlag(updateJenkinsDto.getDefaultJenkinsFlag())
                 .setCommandRunCaseType(updateJenkinsDto.getCommandRunCaseType())
                 .setCommandRunCaseSuffix(updateJenkinsDto.getCommandRunCaseSuffix());
-        TokenDto tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
+        TokenDTO tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
         jenkins.setCreateUserId(tokenDto.getUserId());
         String commandRunCaseSuffix = updateJenkinsDto.getCommandRunCaseSuffix();
         //过滤待.的后缀，如.yml改为yml
@@ -131,12 +131,12 @@ public class JenkinsController {
      */
     @ApiOperation(value = "根据jenkinsId查询Jenkins信息")
     @GetMapping("/{jenkinsId}")
-    public ResultDto<Jenkins> getById(HttpServletRequest request, @PathVariable Integer jenkinsId) {
+    public ResultDTO<Jenkins> getById(HttpServletRequest request, @PathVariable Integer jenkinsId) {
         log.info("根据jenkinsId查询Jenkins信息,JenkinsId为：{} ", jenkinsId);
         if (Objects.isNull(jenkinsId)) {
-            return ResultDto.fail("JenkinsId不能为空");
+            return ResultDTO.fail("JenkinsId不能为空");
         }
-        TokenDto tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
+        TokenDTO tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
         return jenkinsService.getById(jenkinsId, tokenDto.getUserId());
     }
 
@@ -149,12 +149,12 @@ public class JenkinsController {
      */
     @ApiOperation(value = "根据jenkinsId删除Jenkins信息")
     @DeleteMapping("/{jenkinsId}")
-    public ResultDto<Jenkins> delete(HttpServletRequest request, @PathVariable Integer jenkinsId) {
+    public ResultDTO<Jenkins> delete(HttpServletRequest request, @PathVariable Integer jenkinsId) {
         log.info("根据jenkinsId删除Jenkins,JenkinsId为:{} ", jenkinsId);
         if (Objects.isNull(jenkinsId)) {
-            return ResultDto.fail("JenkinsId不能为空");
+            return ResultDTO.fail("JenkinsId不能为空");
         }
-        TokenDto tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
+        TokenDTO tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
         return jenkinsService.delete(jenkinsId, tokenDto);
     }
 
@@ -167,15 +167,15 @@ public class JenkinsController {
      */
     @ApiOperation(value = "分页列表查询")
     @GetMapping("list")
-    public ResultDto<PageTableResponse<Jenkins>> list(HttpServletRequest request, PageTableRequest<QueryJenkinsListDto> pageTableRequest) {
+    public ResultDTO<PageTableResponse<Jenkins>> list(HttpServletRequest request, PageTableRequest<QueryJenkinsListDTO> pageTableRequest) {
         if (Objects.isNull(pageTableRequest)) {
-            return ResultDto.fail("列表查询参数不能为空");
+            return ResultDTO.fail("列表查询参数不能为空");
         }
-        TokenDto tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
+        TokenDTO tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
         log.info("分页列表查询，请求参数:{}, token信息：{}", JSONUtil.parse(pageTableRequest), JSONUtil.parse(tokenDto));
-        QueryJenkinsListDto params = pageTableRequest.getParams();
+        QueryJenkinsListDTO params = pageTableRequest.getParams();
         if (Objects.isNull(params)) {
-            params = new QueryJenkinsListDto();
+            params = new QueryJenkinsListDTO();
         }
         params.setCreateUserId(tokenDto.getUserId());
         pageTableRequest.setParams(params);

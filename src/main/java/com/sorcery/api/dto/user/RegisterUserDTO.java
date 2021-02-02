@@ -1,6 +1,6 @@
 package com.sorcery.api.dto.user;
 
-import com.sorcery.api.dto.BaseDto;
+import com.sorcery.api.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "注册用户对象", description = "用户对象user")
 @Data
-public class RegisterUser extends BaseDto {
+public class RegisterUserDTO extends BaseDTO {
     /**
      * 接口传入的用户名
      */

@@ -1,8 +1,10 @@
 package com.sorcery.api.dto.jenkins;
 
-import com.sorcery.api.dto.TokenDto;
+import com.sorcery.api.dto.BaseDTO;
+import com.sorcery.api.dto.TokenDTO;
 import com.sorcery.api.entity.Jenkins;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Map;
 
@@ -10,12 +12,13 @@ import java.util.Map;
  * @author jingLv
  * @date 2021/01/25
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class OperateJenkinsJobDto {
+public class OperateJenkinsJobDTO extends BaseDTO {
     /**
      * token信息
      */
-    private TokenDto tokenDto;
+    private TokenDTO tokenDto;
     /**
      * Jenkins信息
      */

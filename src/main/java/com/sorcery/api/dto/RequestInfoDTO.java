@@ -2,13 +2,15 @@ package com.sorcery.api.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author jingLv
  * @date 2021/01/19
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class RequestInfoDto {
+public class RequestInfoDTO extends BaseDTO {
     /**
      * 请求的接口地址
      */
