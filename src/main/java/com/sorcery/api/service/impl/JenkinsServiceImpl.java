@@ -123,13 +123,21 @@ public class JenkinsServiceImpl implements JenkinsService {
         }
         jenkins.setCreateTime(result.getCreateTime());
         jenkins.setUpdateTime(new Date());
+        // 更新Jenkins信息
         int update = jenkinsMapper.updateByPrimaryKey(jenkins);
         Assert.isFalse(update != 1, "更新Jenkins信息失败");
         Integer defaultJenkinsFlag = jenkins.getDefaultJenkinsFlag();
         if (Objects.nonNull(defaultJenkinsFlag) && defaultJenkinsFlag == 1) {
             Integer createUserId = jenkins.getCreateUserId();
+            // 根据jenkins创建人的createUserId，并在user表中查询
+            User queryUser = new User();
+            queryUser.setId(createUserId);
+            User userOne = userMapper.selectOne(queryUser);
+            // 构建更新用户信息的实体
             User user = new User();
             user.setId(createUserId);
+            user.setUsername(userOne.getUsername());
+            user.setPassword(userOne.getPassword());
             user.setDefaultJenkinsId(jenkins.getId());
             //更新token信息中的默认JenkinsId
             tokenDto.setDefaultJenkinsId(jenkins.getId());

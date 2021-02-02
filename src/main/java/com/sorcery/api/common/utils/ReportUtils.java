@@ -39,8 +39,8 @@ public class ReportUtils {
      */
     private static String getAllureReportUrlAndLogin(String buildUrl, Jenkins jenkins) {
         String allureReportUrl;
-        String allureReportBaseUrl = jenkins.getUrl() + "j_acegi_security_check?j_username=" + jenkins.getUserName()
-                + "&j_password=" + jenkins.getPassword() + "&Submit=登录&remember_me=on" + "&from=";
+        String allureReportBaseUrl = jenkins.getUrl() + "j_acegi_security_check?j_username=" + jenkins.getJenkinsUsername()
+                + "&j_password=" + jenkins.getJenkinsPassword() + "&Submit=登录&remember_me=on" + "&from=";
         allureReportUrl = allureReportBaseUrl + buildUrl.substring(buildUrl.indexOf("/job"));
         return allureReportUrl;
     }

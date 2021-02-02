@@ -24,7 +24,7 @@ public class OperateJenkinsJobDTO extends BaseDTO {
      */
     private Jenkins jenkins;
     /**
-     * 构建参数
+     * Jenkins Job构建传入参数
      */
     private Map<String, String> params;
 }

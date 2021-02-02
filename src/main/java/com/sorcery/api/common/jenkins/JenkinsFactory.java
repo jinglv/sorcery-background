@@ -66,7 +66,7 @@ public class JenkinsFactory {
             // 获取数据库存储的Jenkins信息（Jenkins的URL，Jenkins用户名，Jenkins密码）
             Jenkins result = getJenkins(createUserId, jenkinsId);
             log.info("根据创建人用户id和Jenkins Id获取Jenkins信息：{}", JSONUtil.toJsonStr(result));
-            jenkinsHttpClient = new JenkinsHttpClient(new URI(result.getUrl()), result.getUserName(), result.getPassword());
+            jenkinsHttpClient = new JenkinsHttpClient(new URI(result.getUrl()), result.getJenkinsUsername(), result.getJenkinsPassword());
         } catch (URISyntaxException e) {
             String tips = "获取Jenkins服务异常" + e.getMessage();
             log.error(tips, e);

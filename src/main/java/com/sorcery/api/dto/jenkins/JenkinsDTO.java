@@ -36,13 +36,13 @@ public class JenkinsDTO extends BaseDTO {
      * 用户名
      */
     @ApiModelProperty(value = "Jenkins用户名称", required = true)
-    private String userName;
+    private String jenkinsUsername;
 
     /**
      * 密码
      */
     @ApiModelProperty(value = "Jenkins用户密码", required = true)
-    private String password;
+    private String jenkinsPassword;
 
     /**
      * 备注
@@ -54,13 +54,13 @@ public class JenkinsDTO extends BaseDTO {
      * 是否默认Jenkins服务
      */
     @ApiModelProperty(value = "是否设置为默认服务器 1 是 0 否", required = true)
-    private Integer defaultJenkinsFlag = 0;
+    private Integer defaultJenkinsFlag;
 
     /**
      *
      */
     @ApiModelProperty(value = "命令运行的测试用例类型  1 文本 2 文件", required = true)
-    private Integer commandRunCaseType = 1;
+    private Integer commandRunCaseType;
 
     /**
      *

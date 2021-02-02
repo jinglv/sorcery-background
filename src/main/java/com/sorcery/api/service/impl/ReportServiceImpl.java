@@ -60,15 +60,17 @@ public class ReportServiceImpl implements ReportService {
         if (Objects.isNull(testJenkinsId)) {
             return ResultDTO.fail("测试任务的jenkinsId不存在 " + taskId);
         }
+        // 构造查询Jenkins条件，根据JenkinsId和当前登录的用户id
         Jenkins queryJenkins = new Jenkins();
-        queryJenkins.setId(testJenkinsId);
-        queryJenkins.setCreateUserId(tokenDto.getUserId());
+        queryJenkins.setId(testJenkinsId)
+                .setCreateUserId(tokenDto.getUserId());
         Jenkins resultJenkins = jenkinsMapper.selectOne(queryJenkins);
+        // 获取Allure测试报告Url
         String allureReportUrl = ReportUtils.getAllureReportUrl(buildUrl, resultJenkins, true);
 
         AllureReportDTO allureReportDto = new AllureReportDTO();
-        allureReportDto.setTaskId(taskId);
-        allureReportDto.setAllureReportUrl(allureReportUrl);
+        allureReportDto.setTaskId(taskId)
+                .setAllureReportUrl(allureReportUrl);
         return ResultDTO.success("成功", allureReportDto);
     }
 
@@ -145,8 +147,7 @@ public class ReportServiceImpl implements ReportService {
             taskSum = taskSum + taskDataDto.getTaskCount();
             newtTaskDataDTOList.add(taskDataDto);
         }
-        taskReportDto.setTaskSum(taskSum);
-        taskReportDto.setTaskDataDTOList(newtTaskDataDTOList);
+        taskReportDto.setTaskSum(taskSum).setTaskDataDTOList(newtTaskDataDTOList);
         return ResultDTO.success("成功", taskReportDto);
     }
 

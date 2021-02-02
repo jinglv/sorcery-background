@@ -9,8 +9,8 @@
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="test_command" jdbcType="VARCHAR" property="testCommand"/>
         <result column="url" jdbcType="VARCHAR" property="url"/>
-        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
-        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="user_name" jdbcType="VARCHAR" property="jenkinsUsername"/>
+        <result column="password" jdbcType="VARCHAR" property="jenkinsPassword"/>
         <result column="create_user_id" jdbcType="INTEGER" property="createUserId"/>
         <result column="command_run_case_type" jdbcType="TINYINT" property="commandRunCaseType"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>

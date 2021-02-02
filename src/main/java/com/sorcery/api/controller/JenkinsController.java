@@ -62,8 +62,8 @@ public class JenkinsController {
         jenkins.setName(jenkinsDto.getName())
                 .setTestCommand(jenkinsDto.getTestCommand())
                 .setUrl(jenkinsDto.getUrl())
-                .setUserName(jenkinsDto.getUserName())
-                .setPassword(jenkinsDto.getPassword())
+                .setJenkinsUsername(jenkinsDto.getJenkinsUsername())
+                .setJenkinsPassword(jenkinsDto.getJenkinsPassword())
                 .setRemark(jenkinsDto.getRemark())
                 .setDefaultJenkinsFlag(jenkinsDto.getDefaultJenkinsFlag())
                 .setCommandRunCaseType(jenkinsDto.getCommandRunCaseType())
@@ -106,8 +106,8 @@ public class JenkinsController {
                 .setName(updateJenkinsDto.getName())
                 .setTestCommand(updateJenkinsDto.getTestCommand())
                 .setUrl(updateJenkinsDto.getUrl())
-                .setUserName(updateJenkinsDto.getUserName())
-                .setPassword(updateJenkinsDto.getPassword())
+                .setJenkinsUsername(updateJenkinsDto.getJenkinsUsername())
+                .setJenkinsPassword(updateJenkinsDto.getJenkinsPassword())
                 .setRemark(updateJenkinsDto.getRemark())
                 .setDefaultJenkinsFlag(updateJenkinsDto.getDefaultJenkinsFlag())
                 .setCommandRunCaseType(updateJenkinsDto.getCommandRunCaseType())
@@ -130,7 +130,7 @@ public class JenkinsController {
      * @return 返回接口请求结果
      */
     @ApiOperation(value = "根据jenkinsId查询Jenkins信息")
-    @GetMapping("/{jenkinsId}")
+    @GetMapping("{jenkinsId}")
     public ResultDTO<Jenkins> getById(HttpServletRequest request, @PathVariable Integer jenkinsId) {
         log.info("根据jenkinsId查询Jenkins信息,JenkinsId为：{} ", jenkinsId);
         if (Objects.isNull(jenkinsId)) {
@@ -148,7 +148,7 @@ public class JenkinsController {
      * @return 返回接口请求结果
      */
     @ApiOperation(value = "根据jenkinsId删除Jenkins信息")
-    @DeleteMapping("/{jenkinsId}")
+    @DeleteMapping("{jenkinsId}")
     public ResultDTO<Jenkins> delete(HttpServletRequest request, @PathVariable Integer jenkinsId) {
         log.info("根据jenkinsId删除Jenkins,JenkinsId为:{} ", jenkinsId);
         if (Objects.isNull(jenkinsId)) {

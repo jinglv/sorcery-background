@@ -39,16 +39,16 @@ public class UpdateJenkinsDTO extends BaseDTO {
     private String url;
 
     /**
-     * 用户名
+     * Jenkins登录用户名
      */
     @ApiModelProperty(value = "Jenkins用户名称", required = true)
-    private String userName;
+    private String jenkinsUsername;
 
     /**
-     * 密码
+     * Jenkins登录密码
      */
     @ApiModelProperty(value = "Jenkins用户密码", required = true)
-    private String password;
+    private String jenkinsPassword;
 
     /**
      * 备注
@@ -60,13 +60,13 @@ public class UpdateJenkinsDTO extends BaseDTO {
      *
      */
     @ApiModelProperty(value = "是否设置为默认服务器 1 是 0 否", required = true)
-    private Integer defaultJenkinsFlag = 0;
+    private Integer defaultJenkinsFlag;
 
     /**
      *
      */
     @ApiModelProperty(value = "命令运行的测试用例类型  1 文本 2 文件", required = true)
-    private Integer commandRunCaseType = 1;
+    private Integer commandRunCaseType;
 
     /**
      *

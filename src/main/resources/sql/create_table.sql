@@ -5,12 +5,15 @@ CREATE DATABASE `sorcery` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_
 DROP TABLE IF EXISTS `test_user`;
 CREATE TABLE `test_user`
 (
-    `id`          INT         NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `user_name`   VARCHAR(50) NOT NULL COMMENT '用户名',
-    `password`    VARCHAR(32) NOT NULL COMMENT '密码',
-    `email`       VARCHAR(40) DEFAULT NULL COMMENT '邮箱',
-    `create_time` TIMESTAMP   DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` TIMESTAMP   DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`                        INT         NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `user_name`                 VARCHAR(50) NOT NULL COMMENT '用户名',
+    `password`                  VARCHAR(32) NOT NULL COMMENT '密码',
+    `email`                     VARCHAR(40) DEFAULT NULL COMMENT '邮箱',
+    `auto_create_case_job_name` VARCHAR(50) NULL COMMENT '自动生成用例job名称，不为空时表示已经创建job',
+    `start_test_job_name`       VARCHAR(50) NULL COMMENT '执行测试job，不为空时表示已经创建job',
+    `default_jenkins_id`        INT         NULL COMMENT '默认Jenkins服务器',
+    `create_time`               TIMESTAMP   DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`               TIMESTAMP   DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
@@ -23,7 +26,7 @@ CREATE TABLE `test_jenkins`
 (
     `id`                      INT AUTO_INCREMENT COMMENT '主键' PRIMARY KEY,
     `jenkins_name`            VARCHAR(100)        NULL COMMENT '名称',
-    `jenkins_url`             VARCHAR(100)        NULL COMMENT 'Jenkins的baseUrl',
+    `url`                     VARCHAR(100)        NULL COMMENT 'Jenkins的baseUrl',
     `jenkins_username`        VARCHAR(100)        NULL COMMENT 'Jenkins认证登录用户名',
     `jenkins_password`        VARCHAR(100)        NULL COMMENT 'Jenkins认证登录密码',
     `test_command`            VARCHAR(100)        NULL COMMENT '执行测试命令',

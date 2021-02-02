@@ -41,30 +41,33 @@ public class JenkinsClient {
     private final String PREFIX_TIPS = "调用Jenkins异常-";
 
     /**
-     * 执行Jenkins中的job
+     * 操作Jenkins中的job
      *
      * @param operateJenkinsJobDto 操作Jenkins job信息
      * @return 返回执行结果
      */
-    public ResultDTO<String> operateJenkinsJob(OperateJenkinsJobDTO operateJenkinsJobDto) throws IOException {
+    public ResultDTO<User> operateJenkinsJob(OperateJenkinsJobDTO operateJenkinsJobDto) {
         log.info("执行Jenkins的Job信息：{}", JSONUtil.toJsonStr(operateJenkinsJobDto));
+        // operateJenkinsJobDto中获取Jenkins信息
         Jenkins jenkins = operateJenkinsJobDto.getJenkins();
+        // 获取token信息
         TokenDTO tokenDto = operateJenkinsJobDto.getTokenDto();
+        // 获取传入构建Job的参数
         Map<String, String> params = operateJenkinsJobDto.getParams();
-
+        // 构建查询用户信息条件，当前登录的用户id，从TokenDTO信息中获取
         User queryUser = new User();
         queryUser.setId(tokenDto.getUserId());
+        // 根据已登录的用户id，数据库中查询
         User resultUser = userMapper.selectOne(queryUser);
-
-        //拼接Job名称
+        // 拼接Job名称和Job标识
         String jobName = JenkinsUtils.getStartTestJobName(tokenDto.getUserId());
         String jobSign = JenkinsUtils.getJobSignByName(jobName);
-        log.info("拼接Job名称：{}", jobName);
-        log.info("拼接Job标识：{}", jobSign);
-
+        log.info("已拼接的Job名称：{}", jobName);
+        log.info("已拼接的Job标识：{}", jobSign);
         if (ObjectUtils.isEmpty(jobSign)) {
             return ResultDTO.fail("Jenkins的Job标识不符合规范");
         }
+        // 获取ClassPATH下的（resources/jenkins/）下的job配置文件模板
         FileReader fileReader = new FileReader(new File("src/main/resources/jenkins/" + jobSign + ".xml"));
         // 获取Jenkins Job的配置文件的内容
         String jobXml = fileReader.readString();
@@ -72,21 +75,26 @@ public class JenkinsClient {
         if (ObjectUtils.isEmpty(jobXml)) {
             return ResultDTO.fail("Job配置信息不能为空");
         }
-        //获取根据job类型获取数据库中对应的job名称
+        // 根据user表中数据决定是新建或更新Job，StartTestJobName如果为空则新建，如果不为空则直接执行
         String dbJobName = resultUser.getStartTestJobName();
         if (ObjectUtils.isEmpty(dbJobName)) {
             log.info("新建Jenkins执行测试的Job");
+            // 获取jenkinsServer，创建Job
             createOrUpdateJob(jobName, jobXml, tokenDto.getUserId(), tokenDto.getDefaultJenkinsId(), 1);
             resultUser.setStartTestJobName(jobName);
             userMapper.updateByPrimaryKeySelective(resultUser);
         } else {
+            log.info("更新Jenkins执行测试的Job");
+            // 获取jenkinsServer，更新Job
             createOrUpdateJob(jobName, jobXml, tokenDto.getUserId(), tokenDto.getDefaultJenkinsId(), 0);
         }
         try {
+            // 获取JenkinsHttpClient
             JenkinsHttpClient jenkinsHttpClient = jenkinsFactory.getJenkinsHttpClient(tokenDto.getUserId(), tokenDto.getDefaultJenkinsId());
+            // 获取对应的Job，并进行构建
             Job job = getJob(jobName, jenkinsHttpClient, jenkins.getUrl());
             build(job, params);
-            return ResultDTO.success("成功");
+            return ResultDTO.success("成功", resultUser);
         } catch (Exception e) {
             String tips = PREFIX_TIPS + "操作Jenkins的Job异常" + e.getMessage();
             log.error(tips, e);
@@ -107,8 +115,10 @@ public class JenkinsClient {
         JenkinsServer jenkinsServer = jenkinsFactory.getJenkinsServer(createUserId, jenkinsId);
         try {
             if (Objects.nonNull(createJobFlag) && createJobFlag == 1) {
+                // Job不存在则创建Job
                 jenkinsServer.createJob(null, jobName, jobXml, true);
             } else {
+                // Job存在则更新Job
                 jenkinsServer.updateJob(null, jobName, jobXml, true);
             }
             ResultDTO.success("成功");
@@ -120,7 +130,7 @@ public class JenkinsClient {
     }
 
     /**
-     * 获取Job
+     * 根据URL获取Jenkins Job
      *
      * @param jobName           Jenkins Job名称
      * @param jenkinsHttpClient jenkinsHttpClient
@@ -128,7 +138,7 @@ public class JenkinsClient {
      * @return 返回Job
      */
     private Job getJob(String jobName, JenkinsHttpClient jenkinsHttpClient, String jenkinsBaseUrl) {
-        ///job/test_aitestbuild/api/json  404  jobName后面需加/，后面改源码
+        // http://{ip:port}/job/{jobName}/
         Job job = new Job(jobName, jenkinsBaseUrl + "job/" + jobName + "/");
         job.setClient(jenkinsHttpClient);
         return job;

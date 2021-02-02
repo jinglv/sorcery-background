@@ -8,8 +8,7 @@ import com.sorcery.api.dto.page.PageTableResponse;
 import com.sorcery.api.dto.task.QueryTaskListDTO;
 import com.sorcery.api.dto.task.TaskDTO;
 import com.sorcery.api.entity.Task;
-
-import java.io.IOException;
+import com.sorcery.api.entity.User;
 
 /**
  * @author jingLv
@@ -66,9 +65,8 @@ public interface TaskService {
      * @param requestInfoDto 接口请求信息
      * @param task           任务信息
      * @return 返回执行结果
-     * @throws IOException io异常
      */
-    ResultDTO<String> startTask(TokenDTO tokenDto, RequestInfoDTO requestInfoDto, Task task) throws IOException;
+    ResultDTO<User> startTask(TokenDTO tokenDto, RequestInfoDTO requestInfoDto, Task task);
 
     /**
      * 修改测试任务状态信息

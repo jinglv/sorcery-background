@@ -41,15 +41,16 @@ public class Jenkins extends BaseEntityNew {
     private String url;
 
     /**
-     * 用户名
+     * Jenkins登录用户名
      */
-    @Column(name = "user_name")
-    private String userName;
+    @Column(name = "jenkins_user_name")
+    private String jenkinsUsername;
 
     /**
-     * 密码
+     * Jenkins登录密码
      */
-    private String password;
+    @Column(name = "jenkins_password")
+    private String jenkinsPassword;
 
     /**
      * 创建人id

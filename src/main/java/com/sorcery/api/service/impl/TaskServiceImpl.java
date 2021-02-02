@@ -1,5 +1,6 @@
 package com.sorcery.api.service.impl;
 
+import cn.hutool.core.lang.Assert;
 import cn.hutool.json.JSONUtil;
 import com.sorcery.api.common.exception.ServiceException;
 import com.sorcery.api.common.jenkins.JenkinsClient;
@@ -19,17 +20,13 @@ import com.sorcery.api.dto.page.PageTableResponse;
 import com.sorcery.api.dto.task.AddTaskDTO;
 import com.sorcery.api.dto.task.QueryTaskListDTO;
 import com.sorcery.api.dto.task.TaskDTO;
-import com.sorcery.api.entity.Cases;
-import com.sorcery.api.entity.Jenkins;
-import com.sorcery.api.entity.Task;
-import com.sorcery.api.entity.TaskCaseRel;
+import com.sorcery.api.entity.*;
 import com.sorcery.api.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -76,37 +73,35 @@ public class TaskServiceImpl implements TaskService {
         if (Objects.isNull(result)) {
             return ResultDTO.fail("Jenkins信息为空");
         }
+        // 根据测试用例Id的列表，数据库中查询测试用例
         List<Cases> casesList = caseMapper.selectByIds(StrUtils.list2IdsStr(caseIdList));
-
         // 组装测试命令
         makeTestCommand(testCommand, result, casesList);
-
         Task task = new Task();
-        task.setName(testTask.getName());
-        task.setTestJenkinsId(testTask.getTestJenkinsId());
-        task.setCreateUserId(testTask.getCreateUserId());
-        task.setRemark(testTask.getRemark());
-        task.setTaskType(taskType);
-        task.setTestCommand(testCommand.toString());
-        task.setCaseCount(caseIdList.size());
-        task.setStatus(Constants.STATUS_ONE);
-        task.setCreateTime(new Date());
-        task.setUpdateTime(new Date());
-        taskMapper.insert(task);
-
+        task.setName(testTask.getName())
+                .setTestJenkinsId(testTask.getTestJenkinsId())
+                .setCreateUserId(testTask.getCreateUserId())
+                .setRemark(testTask.getRemark())
+                .setTaskType(taskType)
+                .setTestCommand(testCommand.toString())
+                .setCaseCount(caseIdList.size())
+                .setStatus(Constants.STATUS_ONE);
+        // 新建测试任务
+        int taskInsert = taskMapper.insert(task);
+        Assert.isFalse(taskInsert != 1, "新建测试任务失败！");
+        // 测试任务与测试用例对应关联，测试任务与测试用例，一对多的关系
         if (caseIdList.size() > 0) {
             List<TaskCaseRel> testTaskCaseList = new ArrayList<>();
             for (Integer testCaseId : caseIdList) {
                 TaskCaseRel taskCaseRel = new TaskCaseRel();
-                taskCaseRel.setTaskId(task.getId());
-                taskCaseRel.setCaseId(testCaseId);
-                taskCaseRel.setCreateUserId(task.getCreateUserId());
-                taskCaseRel.setCreateTime(new Date());
-                taskCaseRel.setUpdateTime(new Date());
+                taskCaseRel.setTaskId(task.getId())
+                        .setCaseId(testCaseId)
+                        .setCreateUserId(task.getCreateUserId());
                 testTaskCaseList.add(taskCaseRel);
             }
             log.info("测试任务详情保存，存入数据库参数：{}", JSONUtil.toJsonStr(testTaskCaseList));
-            taskCaseRelMapper.insertList(testTaskCaseList);
+            int taskCaseInsert = taskCaseRelMapper.insertList(testTaskCaseList);
+            Assert.isFalse(taskCaseInsert != 1, "新建测试任务与测试用例关系失败！");
         }
         return ResultDTO.success("成功", task);
     }
@@ -150,11 +145,11 @@ public class TaskServiceImpl implements TaskService {
         if (Objects.isNull(result)) {
             return ResultDTO.fail("未查到测试任务信息");
         }
-        result.setUpdateTime(new Date());
-        result.setName(task.getName());
-        result.setRemark(task.getRemark());
-
-        taskMapper.updateByPrimaryKeySelective(result);
+        result.setUpdateTime(new Date())
+                .setName(task.getName())
+                .setRemark(task.getRemark());
+        int taskUpdate = taskMapper.updateByPrimaryKeySelective(result);
+        Assert.isFalse(taskUpdate != 1, "更新测试任务失败！");
         return ResultDTO.success("成功");
     }
 
@@ -207,12 +202,12 @@ public class TaskServiceImpl implements TaskService {
      * @param requestInfoDto 接口请求信息
      * @param task           任务信息
      * @return 返回执行结果
-     * @throws IOException io异常
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResultDTO<String> startTask(TokenDTO tokenDto, RequestInfoDTO requestInfoDto, Task task) throws IOException {
+    public ResultDTO<User> startTask(TokenDTO tokenDto, RequestInfoDTO requestInfoDto, Task task) {
         log.info("测试任务执行, 请求参数：{}, 测试任务请求参数：{}", JSONUtil.toJsonStr(requestInfoDto), JSONUtil.toJsonStr(task));
+        // 参数校验和默认Jenkins是否有效
         if (Objects.isNull(task)) {
             return ResultDTO.fail("测试任务参数不能为空");
         }
@@ -244,34 +239,38 @@ public class TaskServiceImpl implements TaskService {
         if (ObjectUtils.isEmpty(testCommandStr)) {
             return ResultDTO.fail("任务的测试命令不能为空");
         }
-        //更新任务状态
+        // 更新任务状态，任务状态：执行中
         resultTask.setStatus(Constants.STATUS_TWO);
         taskMapper.updateByPrimaryKeySelective(resultTask);
 
-        //添加保存测试任务接口拼装的mvn test 命令
+        // 添加保存测试任务接口拼装的mvn test 命令
         String testCommand = testCommandStr + " \n";
         // 更新执行测试任务状态
         StringBuilder updateStatusUrl = JenkinsUtils.getUpdateTaskStatusUrl(requestInfoDto, resultTask);
-        //构建参数组装
-        Map<String, String> params = new HashMap<>();
+        // Jenkins构建参数组装
+        Map<String, String> params = new HashMap<>(16);
+        // 与resources/jenkins下xml的配置文件中的参数一致
         params.put("baseUrl", requestInfoDto.getBaseUrl());
         params.put("token", requestInfoDto.getToken());
         params.put("testCommand", testCommand);
         params.put("updateStatusData", updateStatusUrl.toString());
-
         log.info("执行测试Job的构建参数组装：{}", JSONUtil.toJsonStr(params));
         log.info("执行测试Job的修改任务状态的数据组装：{}", updateStatusUrl);
 
+        // 构建执行Jenkins Job
         OperateJenkinsJobDTO operateJenkinsJobDto = new OperateJenkinsJobDTO();
-        operateJenkinsJobDto.setParams(params);
+        // tokenDto赋值
         operateJenkinsJobDto.setTokenDto(tokenDto);
+        // 查询到Jenkins信息，进行赋值
         operateJenkinsJobDto.setJenkins(resultJenkins);
+        // 传入Jenkins配置文件的构建参数
         operateJenkinsJobDto.setParams(params);
 
-        ResultDTO<String> resultDto = jenkinsClient.operateJenkinsJob(operateJenkinsJobDto);
-        //此处抛出异常，阻止事务提交
+        // 调用Jenkins，操作Jenkins
+        ResultDTO<User> resultDto = jenkinsClient.operateJenkinsJob(operateJenkinsJobDto);
+        // 此处抛出异常，阻止事务提交
         if (0 == resultDto.getResultCode()) {
-            throw new ServiceException("执行测试时异常-" + resultDto.getMessage());
+            throw new ServiceException("Jenkins Job执行测试时异常:" + resultDto.getMessage());
         }
         return resultDto;
     }

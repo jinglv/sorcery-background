@@ -12,6 +12,7 @@ import com.sorcery.api.dto.page.PageTableRequest;
 import com.sorcery.api.dto.page.PageTableResponse;
 import com.sorcery.api.dto.task.*;
 import com.sorcery.api.entity.Task;
+import com.sorcery.api.entity.User;
 import com.sorcery.api.service.TaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -194,10 +195,9 @@ public class TaskController {
             return ResultDTO.success("任务状态码不能为空");
         }
         Task task = new Task();
-        task.setId(taskId);
-        task.setBuildUrl(buildUrl);
-        task.setStatus(status);
-
+        task.setId(taskId)
+                .setBuildUrl(buildUrl)
+                .setStatus(status);
         TokenDTO tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
         task.setCreateUserId(tokenDto.getUserId());
         return taskService.updateStatus(task);
@@ -209,12 +209,11 @@ public class TaskController {
      * @param request      HttpServletRequest
      * @param startTestDto 测试任务执行请求参数
      * @return 返回请求接口结果
-     * @throws Exception 异常
      */
     @PostMapping("start")
     @ApiOperation(value = "测试任务执行", notes = "测试任务执行", httpMethod = "POST", response = ResultDTO.class)
-    public ResultDTO<String> testStart(HttpServletRequest request
-            , @ApiParam(name = "修改测试任务状态对象", required = true) @RequestBody StartTestDTO startTestDto) throws Exception {
+    public ResultDTO<User> testStart(HttpServletRequest request
+            , @ApiParam(name = "修改测试任务状态对象", required = true) @RequestBody StartTestDTO startTestDto) {
         log.info("执行测试任务，请求参数：{}", JSONUtil.parse(startTestDto));
         if (Objects.isNull(startTestDto)) {
             return ResultDTO.fail("执行测试请求不能为空");
@@ -228,7 +227,7 @@ public class TaskController {
         Task task = new Task();
         task.setId(startTestDto.getTaskId());
         task.setTestCommand(startTestDto.getTestCommand());
-
+        // 从TokenDb中获取TokenDTO
         TokenDTO tokenDto = tokenDb.getTokenDto(request.getHeader(UserConstants.LOGIN_TOKEN));
         task.setCreateUserId(tokenDto.getUserId());
         task.setTestJenkinsId(tokenDto.getDefaultJenkinsId());
@@ -237,11 +236,13 @@ public class TaskController {
         log.info("请求地址:{}", url);
         url = StrUtils.getHostAndPort(request.getRequestURL().toString());
 
+        // 组装RequestInfoDTO参数
         RequestInfoDTO requestInfoDto = new RequestInfoDTO();
         requestInfoDto.setBaseUrl(url);
         requestInfoDto.setRequestUrl(url);
         requestInfoDto.setToken(token);
         log.info("请求参数:{}", JSONUtil.parse(requestInfoDto));
+        // 调用startTask并返回结果
         return taskService.startTask(tokenDto, requestInfoDto, task);
     }
 }
