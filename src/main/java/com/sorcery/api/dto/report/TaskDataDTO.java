@@ -1,7 +1,6 @@
 package com.sorcery.api.dto.report;
 
 import com.sorcery.api.dto.BaseDTO;
-import com.sun.istack.internal.NotNull;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,7 +18,6 @@ public class TaskDataDTO extends BaseDTO {
      * 任务数量
      */
     @ApiModelProperty(value = "任务数量", required = true)
-    @NotNull
     private Integer taskCount;
 
     /**
