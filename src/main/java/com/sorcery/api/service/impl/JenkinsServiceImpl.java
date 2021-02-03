@@ -60,7 +60,7 @@ public class JenkinsServiceImpl implements JenkinsService {
             tokenDto.setDefaultJenkinsId(jenkins.getId());
             tokenDb.addTokenDto(tokenDto.getToken(), tokenDto);
             int update = userMapper.updateByPrimaryKeySelective(user);
-            Assert.isFalse(update != 1, "更新用户信息失败");
+            Assert.isFalse(update != 1, "Jenkins保存时，更新用户信息失败");
         }
         return ResultDTO.success("成功", jenkins);
     }
@@ -75,6 +75,7 @@ public class JenkinsServiceImpl implements JenkinsService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResultDTO<Jenkins> delete(Integer jenkinsId, TokenDTO tokenDto) {
+        // 构造Jenkins信息的查询条件
         Jenkins queryJenkins = new Jenkins();
         queryJenkins.setId(jenkinsId);
         queryJenkins.setCreateUserId(tokenDto.getUserId());
@@ -86,16 +87,18 @@ public class JenkinsServiceImpl implements JenkinsService {
         User queryUser = new User();
         queryUser.setId(tokenDto.getUserId());
         User resultUser = userMapper.selectOne(queryUser);
+        // 判断Jenkins是否是登录用户默认的
         Integer defaultJenkinsId = resultUser.getDefaultJenkinsId();
         if (Objects.nonNull(defaultJenkinsId) && defaultJenkinsId.equals(jenkinsId)) {
+            // 构建用户信息的查询条件，如果删除Jenkins信息，则将defaultJenkinsId置为null
             User user = new User();
             user.setId(tokenDto.getUserId());
             user.setDefaultJenkinsId(null);
             //更新token信息中的默认JenkinsId
             tokenDto.setDefaultJenkinsId(null);
             tokenDb.addTokenDto(tokenDto.getToken(), tokenDto);
-            int update = userMapper.updateByPrimaryKey(user);
-            Assert.isFalse(update != 1, "更新用户信息失败");
+            int update = userMapper.updateByPrimaryKeySelective(user);
+            Assert.isFalse(update != 1, "Jenkins删除时，更新用户信息失败");
         }
         int delete = jenkinsMapper.deleteByPrimaryKey(jenkinsId);
         Assert.isFalse(delete != 1, "删除Jenkins信息失败");
@@ -126,24 +129,19 @@ public class JenkinsServiceImpl implements JenkinsService {
         // 更新Jenkins信息
         int update = jenkinsMapper.updateByPrimaryKey(jenkins);
         Assert.isFalse(update != 1, "更新Jenkins信息失败");
+        // 判断Jenkins是否是登录用户默认的
         Integer defaultJenkinsFlag = jenkins.getDefaultJenkinsFlag();
         if (Objects.nonNull(defaultJenkinsFlag) && defaultJenkinsFlag == 1) {
             Integer createUserId = jenkins.getCreateUserId();
-            // 根据jenkins创建人的createUserId，并在user表中查询
-            User queryUser = new User();
-            queryUser.setId(createUserId);
-            User userOne = userMapper.selectOne(queryUser);
-            // 构建更新用户信息的实体
+            // 更新的Jenkins信息后，需要将用户信息中的数据进行更新
             User user = new User();
             user.setId(createUserId);
-            user.setUsername(userOne.getUsername());
-            user.setPassword(userOne.getPassword());
-            user.setDefaultJenkinsId(jenkins.getId());
-            //更新token信息中的默认JenkinsId
+            user.setDefaultJenkinsId(user.getId());
+            // 更新token信息中的默认JenkinsId
             tokenDto.setDefaultJenkinsId(jenkins.getId());
             tokenDb.addTokenDto(tokenDto.getToken(), tokenDto);
-            int updateUser = userMapper.updateByPrimaryKey(user);
-            Assert.isFalse(updateUser != 1, "更新用户信息失败");
+            int updateUser = userMapper.updateByPrimaryKeySelective(user);
+            Assert.isFalse(updateUser != 1, "Jenkins更新时，更新用户信息失败");
         }
         return ResultDTO.success("成功");
     }

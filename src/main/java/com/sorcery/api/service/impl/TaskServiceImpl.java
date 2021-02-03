@@ -189,11 +189,11 @@ public class TaskServiceImpl implements TaskService {
         //总数
         Integer recordsTotal = taskMapper.count(params);
         //分页查询数据
-        List<Task> hogwartsTestJenkinsList = taskMapper.list(params, (pageNum - 1) * pageSize, pageSize);
-        PageTableResponse<Task> hogwartsTestJenkinsPageTableResponse = new PageTableResponse<>();
-        hogwartsTestJenkinsPageTableResponse.setRecordsTotal(recordsTotal);
-        hogwartsTestJenkinsPageTableResponse.setData(hogwartsTestJenkinsList);
-        return ResultDTO.success("成功", hogwartsTestJenkinsPageTableResponse);
+        List<Task> jenkinsList = taskMapper.list(params, (pageNum - 1) * pageSize, pageSize);
+        PageTableResponse<Task> jenkinsPageTableResponse = new PageTableResponse<>();
+        jenkinsPageTableResponse.setRecordsTotal(recordsTotal);
+        jenkinsPageTableResponse.setData(jenkinsList);
+        return ResultDTO.success("成功", jenkinsPageTableResponse);
     }
 
     /**

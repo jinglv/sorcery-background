@@ -94,7 +94,7 @@ public class ReportServiceImpl implements ReportService {
             if (Objects.isNull(taskKey)) {
                 taskKey = 0;
             }
-            if (0 == taskKey) {
+            if (Constants.STATUS_ZERO.equals(taskKey)) {
                 taskDataDto.setDescription("无匹配任务");
             }
             if (Constants.TASK_TYPE_ONE.equals(taskKey)) {
@@ -132,7 +132,7 @@ public class ReportServiceImpl implements ReportService {
             if (Objects.isNull(taskKey)) {
                 taskKey = 0;
             }
-            if (0 == taskKey) {
+            if (Constants.STATUS_ZERO.equals(taskKey)) {
                 taskDataDto.setDescription("无匹配任务");
             }
             if (Constants.STATUS_ONE.equals(taskKey)) {

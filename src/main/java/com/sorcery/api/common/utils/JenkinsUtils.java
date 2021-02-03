@@ -18,7 +18,7 @@ public class JenkinsUtils {
 
     /**
      * 获取执行测试的Job名称
-     * 拼接Job名称规则：RESTFulApiTest_1（创建的用户Id）
+     * 拼接Job名称规则：RESTFulApiTest_1（创建的用户Id），如果用户start_test_job_name为null，则会根据该规则拼接Job名称，并保存
      *
      * @return 返回拼接完成的Jenkins名称
      */
@@ -40,7 +40,7 @@ public class JenkinsUtils {
     }
 
     /**
-     * Jenkins回调，更新执行测试任务状态
+     * Jenkins回调(拼接执行任务修改状态接口)，更新执行测试任务状态
      *
      * @param requestInfoDto 请求信息
      * @param task           测试任务信息
