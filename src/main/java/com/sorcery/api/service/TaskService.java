@@ -10,6 +10,8 @@ import com.sorcery.api.dto.task.TaskDTO;
 import com.sorcery.api.entity.Task;
 import com.sorcery.api.entity.User;
 
+import java.io.IOException;
+
 /**
  * @author jingLv
  * @date 2021/01/19
@@ -66,7 +68,7 @@ public interface TaskService {
      * @param task           任务信息
      * @return 返回执行结果
      */
-    ResultDTO<User> startTask(TokenDTO tokenDto, RequestInfoDTO requestInfoDto, Task task);
+    ResultDTO<User> startTask(TokenDTO tokenDto, RequestInfoDTO requestInfoDto, Task task) throws IOException;
 
     /**
      * 修改测试任务状态信息

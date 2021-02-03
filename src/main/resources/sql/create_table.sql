@@ -26,7 +26,7 @@ CREATE TABLE `test_jenkins`
 (
     `id`                      INT AUTO_INCREMENT COMMENT '主键' PRIMARY KEY,
     `jenkins_name`            VARCHAR(100)        NULL COMMENT '名称',
-    `url`                     VARCHAR(100)        NULL COMMENT 'Jenkins的baseUrl',
+    `jenkins_url`             VARCHAR(100)        NULL COMMENT 'Jenkins的baseUrl',
     `jenkins_username`        VARCHAR(100)        NULL COMMENT 'Jenkins认证登录用户名',
     `jenkins_password`        VARCHAR(100)        NULL COMMENT 'Jenkins认证登录密码',
     `test_command`            VARCHAR(100)        NULL COMMENT '执行测试命令',

@@ -22,6 +22,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -213,7 +214,7 @@ public class TaskController {
     @PostMapping("start")
     @ApiOperation(value = "测试任务执行", notes = "测试任务执行", httpMethod = "POST", response = ResultDTO.class)
     public ResultDTO<User> testStart(HttpServletRequest request
-            , @ApiParam(name = "修改测试任务状态对象", required = true) @RequestBody StartTestDTO startTestDto) {
+            , @ApiParam(name = "修改测试任务状态对象", required = true) @RequestBody StartTestDTO startTestDto) throws IOException {
         log.info("执行测试任务，请求参数：{}", JSONUtil.parse(startTestDto));
         if (Objects.isNull(startTestDto)) {
             return ResultDTO.fail("执行测试请求不能为空");

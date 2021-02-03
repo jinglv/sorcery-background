@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -205,7 +206,7 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResultDTO<User> startTask(TokenDTO tokenDto, RequestInfoDTO requestInfoDto, Task task) {
+    public ResultDTO<User> startTask(TokenDTO tokenDto, RequestInfoDTO requestInfoDto, Task task) throws IOException {
         log.info("测试任务执行, 请求参数：{}, 测试任务请求参数：{}", JSONUtil.toJsonStr(requestInfoDto), JSONUtil.toJsonStr(task));
         // 参数校验和默认Jenkins是否有效
         if (Objects.isNull(task)) {

@@ -15,10 +15,10 @@ import com.sorcery.api.dto.jenkins.OperateJenkinsJobDTO;
 import com.sorcery.api.entity.Jenkins;
 import com.sorcery.api.entity.User;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
@@ -46,7 +46,7 @@ public class JenkinsClient {
      * @param operateJenkinsJobDto 操作Jenkins job信息
      * @return 返回执行结果
      */
-    public ResultDTO<User> operateJenkinsJob(OperateJenkinsJobDTO operateJenkinsJobDto) {
+    public ResultDTO<User> operateJenkinsJob(OperateJenkinsJobDTO operateJenkinsJobDto) throws IOException {
         log.info("执行Jenkins的Job信息：{}", JSONUtil.toJsonStr(operateJenkinsJobDto));
         // operateJenkinsJobDto中获取Jenkins信息
         Jenkins jenkins = operateJenkinsJobDto.getJenkins();
@@ -68,7 +68,9 @@ public class JenkinsClient {
             return ResultDTO.fail("Jenkins的Job标识不符合规范");
         }
         // 获取ClassPATH下的（resources/jenkins/）下的job配置文件模板
-        FileReader fileReader = new FileReader(new File("src/main/resources/jenkins/" + jobSign + ".xml"));
+        ClassPathResource resource = new ClassPathResource("jenkins/" + jobSign + ".xml");
+        log.info("获取Jenkins Job配置文件：{}", resource.getFile());
+        FileReader fileReader = new FileReader(resource.getFile());
         // 获取Jenkins Job的配置文件的内容
         String jobXml = fileReader.readString();
         log.info("解析Jenkins配置文件内容:{}", jobXml);
