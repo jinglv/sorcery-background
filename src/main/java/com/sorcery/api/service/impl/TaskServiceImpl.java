@@ -315,8 +315,8 @@ public class TaskServiceImpl implements TaskService {
      */
     private void makeTestCommand(StringBuilder testCommand, Jenkins jenkins, List<Cases> casesList) {
         //打印测试目录
-        testCommand.append("pwd");
-        testCommand.append("\n");
+//        testCommand.append("pwd");
+//        testCommand.append("\n");
         if (Objects.isNull(jenkins)) {
             throw new ServiceException("组装测试命令时，Jenkins信息为空");
         }

@@ -60,8 +60,8 @@
             <command>
                 pwd
                 . /etc/profile
-                eval "${testCommand}"
                 eval "${updateStatusData}"
+                eval "${testCommand}"
             </command>
             <configuredLocalRules/>
         </hudson.tasks.Shell>

@@ -1,6 +1,5 @@
 package com.sorcery.api.common.jenkins;
 
-import cn.hutool.core.io.file.FileReader;
 import cn.hutool.json.JSONUtil;
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.client.JenkinsHttpClient;
@@ -15,9 +14,7 @@ import com.sorcery.api.dto.jenkins.OperateJenkinsJobDTO;
 import com.sorcery.api.entity.Jenkins;
 import com.sorcery.api.entity.User;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ObjectUtils;
@@ -73,17 +70,8 @@ public class JenkinsClient {
         }
         // 获取ClassPATH下的（resources/jenkins/）下的job配置文件模板
         ClassPathResource resource = new ClassPathResource("jenkins/" + jobSign + ".xml");
-        String jobXml = "";
-        try {
-            byte[] bdata = FileCopyUtils.copyToByteArray(resource.getInputStream());
-//            log.info("获取Jenkins Job配置文件：{}", resource.getFilename());
-            jobXml = new String(bdata, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            log.warn("IOException", e);
-        }
-//        FileReader fileReader = new FileReader(resource.getFile());
-//        // 获取Jenkins Job的配置文件的内容
-//        String jobXml = fileReader.readString();
+        byte[] jenkinsData = FileCopyUtils.copyToByteArray(resource.getInputStream());
+        String jobXml = new String(jenkinsData, StandardCharsets.UTF_8);
         log.info("解析Jenkins配置文件内容:{}", jobXml);
         if (ObjectUtils.isEmpty(jobXml)) {
             return ResultDTO.fail("Job配置信息不能为空");

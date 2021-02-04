@@ -160,7 +160,7 @@
         <profile>
             <id>pro</id>
             <properties>
-                <spring.profiles.active>prod</spring.profiles.active>
+                <spring.profiles.active>pro</spring.profiles.active>
             </properties>
         </profile>
     </profiles>
@@ -183,9 +183,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-<!--                <configuration>-->
-<!--                    <skip>true</skip>-->
-<!--                </configuration>-->
             </plugin>
 
             <!-- 解决测试代码时遇到错误停止编译的问题 -->
