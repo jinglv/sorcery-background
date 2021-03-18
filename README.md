@@ -1,7 +1,16 @@
 # 测试管理平台
 SpringBoot后台
 
+## 功能介绍
+
+![image-20210318182935192](../../Library/Application Support/typora-user-images/image-20210318182935192.png)
+
+![image-20210318183034598](https://gitee.com/JeanLv/study_image2/raw/master///image-20210318183034598.png)
+
+
+
 ## Jenkins调用
+
 ### Jenkins调用Maven依赖
 ```xml
     <!--Jenkins调用-->

@@ -36,8 +36,8 @@
         <configVersion>2</configVersion>
         <userRemoteConfigs>
             <hudson.plugins.git.UserRemoteConfig>
-                <url>https://github.com/jinglv/api-object-auto.git</url>
-                <credentialsId>5580d1af-de47-4566-8631-09867940242f</credentialsId>
+                <url>https://gitee.com/jeanlv/api-object-auto.git</url>
+                <credentialsId>b4d58207-0fa3-43f5-bf1d-c635025a7684</credentialsId>
             </hudson.plugins.git.UserRemoteConfig>
         </userRemoteConfigs>
         <branches>
